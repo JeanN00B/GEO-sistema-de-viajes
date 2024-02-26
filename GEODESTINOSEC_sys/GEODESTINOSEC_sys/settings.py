@@ -27,11 +27,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGIN_URL = '/login/'
+LOGOUT_REDIRECT_URL = 'index'
+
 
 # Application definition
-
+# TO-DO AND REMOVE: user:admin, pass:admin
 INSTALLED_APPS = [
-    'clients_db.apps.ClientsDbConfig',
+    'core',
+    'sysuserprofile',
+    'dashboard',
+    #'clients_db',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -104,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-ES' #'en-us'
 
 TIME_ZONE = 'UTC'
 
