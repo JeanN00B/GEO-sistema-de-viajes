@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %} Administrador de Clientes {% endblock %}
+
+{% block content %}
+<div class="py-3 px-4">
+    <a href="{% url 'new_client' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Nuevo Cliente</a>
+</div>
+
+<div class="py-3 px-4">
+    <table class="justify-between" style="width: 100%;">
+        <thead>
+            <tr>
+                <th>Nombre completo</th>
+                <th>Número de CI</th>
+                <th>Tipo de CI</th>
+                <th>Fecha de nacimiento</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- we get the clients infor form the view:
+                return render(request, 'clients/clients.html', {
+                    'clients': clients -->
+            {% for client in clients %}
+            <tr>
+                <td>{{ client.first_name }} {{ client.second_name|default:'' }} {{ client.last_name }} {{ client.sur_name|default:'' }}</td>
+                <td>{{ client.id_number }}</td>
+                <td>{{ client.id_type }}</td>
+                <td>{{ client.date_of_birth }}</td>
+                <td><button>Modify</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>   
+</div>
+{% endblock %}

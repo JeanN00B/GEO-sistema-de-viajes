@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'core',
     'sysuserprofile',
     'dashboard',
-    #'clients_db',
+    'clients',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

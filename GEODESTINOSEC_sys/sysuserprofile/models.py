@@ -23,3 +23,6 @@ class UserProfile(models.Model):
         RegexValidator(regex='^\d{10}$', message='Length has to be 10', code='nomatch'),])
     email = models.EmailField(max_length=40, null=False, blank=False)
     roll = models.CharField(max_length=30, null=False, blank=False, default='user')
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
