@@ -42,10 +42,10 @@ GENDER_CHOICES =[
     ('O', 'Otro')
     ]
 CIVIL_STATUS_CHOICES = [
-    ('s', 'Soltero'), 
-    ('c', 'Casado'), 
-    ('d', 'Divorciado'), 
-    ('v', 'Viudo'),
+    ('s', 'Soltero(a)'), 
+    ('c', 'Casado(a)'), 
+    ('d', 'Divorciado(a)'), 
+    ('v', 'Viudo(a)'),
     ]
 ID_TYPE_CHOICES = [
     ('CI', 'CI'),

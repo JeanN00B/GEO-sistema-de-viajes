@@ -1,6 +1,5 @@
 from django import forms
-from .models import Client
-from django.contrib.auth.decorators import login_required
+from .models import Client, PROVINCES_CITIES_ECUADOR
 
 
 class AddClientForm(forms.ModelForm):
@@ -39,18 +38,7 @@ class AddClientForm(forms.ModelForm):
             'company_name': 'Nombre de la Empresa',
             'additional_info': 'Información Adicional',
         }
-        '''     
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'address': forms.TextInput(attrs={'class': 'form-control'}),
-            'city': forms.TextInput(attrs={'class': 'form-control'}),
-            'state': forms.TextInput(attrs={'class': 'form-control'}),
-            'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
-            'country': forms.TextInput(attrs={'class': 'form-control'}),
-        }
-        '''
+
         def __init__(self, *args, **kwargs):
             self.request = kwargs.pop("request", None)
             super(AddClientForm, self).__init__(*args, **kwargs)
@@ -63,3 +51,19 @@ class AddClientForm(forms.ModelForm):
             elif len(id_number) != 10:
                 raise forms.ValidationError("El número de identificación debe tener 10 dígitos")
             return id_number
+        
+        def clean_city(self):
+            city = self.cleaned_data.get("city")
+            province = self.cleaned_data.get("province")
+            if city not in PROVINCES_CITIES_ECUADOR[province]:
+                raise forms.ValidationError("Error! La ciudad no pertenece a la provincia")
+            return city
+        
+
+
+class ReadUpdateClientForm(forms.ModelForm):
+    class Meta:
+        model = Client
+        fields = ["id_number", "id_type", "client_type", "first_name",
+                  "second_name", "last_name", "sur_name",]
+        labels = {}

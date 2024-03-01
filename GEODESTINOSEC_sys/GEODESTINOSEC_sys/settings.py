@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = 'index'
-
+STATIC_URL = '/static/'
 
 # Application definition
 # TO-DO AND REMOVE: user:admin, pass:admin

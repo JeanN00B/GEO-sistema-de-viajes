@@ -4,19 +4,26 @@
 {% block title %} Administrador de Clientes {% endblock %}
 
 {% block content %}
-<div class="py-3 px-4">
+<div class="flex justify-between py-3 px-4 space-x-4">
     <a href="{% url 'new_client' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Nuevo Cliente</a>
+
+    {% csrf_token %}
+    <form method="GET" action="{% url 'search_name' %}">
+        <input type="text" name="q" class="border border-gray-300 rounded-lg p-2" placeholder="Buscar cliente">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Buscar</button>
+    </form>
 </div>
+
 
 <div class="py-3 px-4">
     <table class="justify-between" style="width: 100%;">
-        <thead>
-            <tr>
-                <th>Nombre completo</th>
-                <th>Número de CI</th>
-                <th>Tipo de CI</th>
-                <th>Fecha de nacimiento</th>
-                <th>Acciones</th>
+        <thead class="py-3 bg-gray-200">
+            <tr >
+                <th class="py-2">Nombre completo</th>
+                <th class="py-2">Número de CI</th>
+                <th class="py-2">Tipo de CI</th>
+                <th class="py-2">Fecha de nacimiento</th>
+                <th class="py-2">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -24,12 +31,12 @@
                 return render(request, 'clients/clients.html', {
                     'clients': clients -->
             {% for client in clients %}
-            <tr>
-                <td>{{ client.first_name }} {{ client.second_name|default:'' }} {{ client.last_name }} {{ client.sur_name|default:'' }}</td>
-                <td>{{ client.id_number }}</td>
-                <td>{{ client.id_type }}</td>
-                <td>{{ client.date_of_birth }}</td>
-                <td><button>Modify</button></td>
+            <tr class="text-center align-middle {% cycle 'bg-gray-100' '' %}">
+                <td class="py-2 px-4">{{ client.first_name }} {{ client.second_name|default:'' }} {{ client.last_name }} {{ client.sur_name|default:'' }}</td>
+                <td class="py-2 px-4">{{ client.id_number }}</td>
+                <td class="py-2 px-4">{{ client.id_type }}</td>
+                <td class="py-2 px-4">{{ client.date_of_birth }}</td>
+                <td class="py-2 px-4"><a href="{% url 'clients_read_update' client.id_number %}" target="_blank" class="px-4 py-1 bg-green-400 hover:bg-green-600 text-white rounded-xl">Ver / Modificar</a></td>
             </tr>
             {% endfor %}
         </tbody>
