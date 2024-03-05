@@ -64,6 +64,41 @@ class AddClientForm(forms.ModelForm):
 class ReadUpdateClientForm(forms.ModelForm):
     class Meta:
         model = Client
-        fields = ["id_number", "id_type", "client_type", "first_name",
-                  "second_name", "last_name", "sur_name",]
-        labels = {}
+        exclude = ['id_number']
+        labels = {
+            'id_number': 'Número de Identificación',
+            'id_type': 'Tipo de Identificación',
+            'client_type': 'Tipo de Cliente',
+            'first_name': 'Primer Nombre',
+            'second_name': 'Segundo Nombre',
+            'last_name': 'Primer Apellido',
+            'sur_name': 'Segundo Apellido',
+            'gender': 'Género',
+            'salesman_refer': 'Vendedor Referente',
+            'civil_status': 'Estado Civil',
+            'phone': 'Teléfono celular',
+            'email': 'Correo electrónico',
+            'province': 'Provincia',
+            'city': 'Ciudad',
+            'address': 'Dirección',
+            'person_type': 'Tipo de Persona',
+            'nationality': 'Nacionalidad',
+            'date_of_birth': 'Fecha de Nacimiento',
+            'budget_capacity': 'Capacidad de Presupuesto',
+            'work_industry': 'Industria de Trabajo',
+            'work_position': 'Cargo de Trabajo',
+            'company_name': 'Nombre de la Empresa',
+            'additional_info': 'Información Adicional',
+        }
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields['id_type'].widget.attrs['readonly'] = True
+
+        def clean_id_number(self):
+            # Validar si el id_number ha cambiado
+            old_id_number = self.instance.id_number
+            new_id_number = self.cleaned_data['id_number']
+            if old_id_number != new_id_number:
+                raise forms.ValidationError('No se permite cambiar el número de identificación.')
+            return new_id_number
