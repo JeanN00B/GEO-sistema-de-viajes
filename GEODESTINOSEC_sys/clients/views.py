@@ -2,11 +2,37 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import AddClientForm
 from django.contrib.auth import get_user_model
+<<<<<<< Updated upstream
 from .models import Client
+=======
+from django.http import JsonResponse
+from django.db.models import Q
+from .forms import AddClientForm, ReadUpdateClientForm
+from .models import Client, PROVINCES_CITIES_ECUADOR
+
+
+@login_required
+def search_name(request):
+    query_string = request.GET.get('q')
+    if query_string:
+        query_list = query_string.split()
+        queries = [Q(first_name__icontains=term) | 
+                   Q(second_name__icontains=term) | 
+                   Q(last_name__icontains=term) | 
+                   Q(sur_name__icontains=term) for term in query_list]
+        query = queries.pop() if queries else Q()
+        for item in queries:
+            query |= item
+        clients = Client.objects.filter(query)
+    else:
+        clients = Client.objects.all()
+    return render(request, 'clients/clients_search_result.html', {'clients': clients})
+>>>>>>> Stashed changes
 
 @login_required
 def clients_visualize(request):
-    clients = Client.objects.all()
+    clients = Client.objects.all().order_by(
+        'first_name', 'second_name', 'last_name', 'sur_name')
     return render(request, 'clients/clients.html', {
         'clients': clients
     })
