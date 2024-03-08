@@ -1,10 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import AddClientForm
 from django.contrib.auth import get_user_model
-<<<<<<< Updated upstream
-from .models import Client
-=======
 from django.http import JsonResponse
 from django.db.models import Q
 from .forms import AddClientForm, ReadUpdateClientForm
@@ -27,7 +24,6 @@ def search_name(request):
     else:
         clients = Client.objects.all()
     return render(request, 'clients/clients_search_result.html', {'clients': clients})
->>>>>>> Stashed changes
 
 @login_required
 def clients_visualize(request):
@@ -56,3 +52,17 @@ def clients_create(request):
         form = AddClientForm()
         return render(request, 'clients/new_client.html',
                     {'form': form})
+
+@login_required
+def clients_read_update(request, pk):
+    client = get_object_or_404(Client, pk=pk)
+    if request.method == 'POST':
+        form = ReadUpdateClientForm(request.POST, instance=client)
+        if form.is_valid():
+            form.save()
+            return redirect('/dashboard/clients/')
+    else:
+        form = ReadUpdateClientForm(instance=client)
+    
+    return render(request, 'clients/read_update_client.html',
+                        {'form': form, 'client': client})

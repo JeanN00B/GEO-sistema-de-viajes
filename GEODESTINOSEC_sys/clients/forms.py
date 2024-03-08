@@ -1,12 +1,7 @@
 from django import forms
 from .models import Client
-<<<<<<< Updated upstream
-from django.contrib.auth.decorators import login_required
-
-=======
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
->>>>>>> Stashed changes
 
 class AddClientForm(forms.ModelForm):
     phone = PhoneNumberField(
@@ -39,32 +34,6 @@ class AddClientForm(forms.ModelForm):
             'company_name': 'Nombre de la Empresa',
             'additional_info': 'Información Adicional',
         }
-<<<<<<< Updated upstream
-        '''     
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'address': forms.TextInput(attrs={'class': 'form-control'}),
-            'city': forms.TextInput(attrs={'class': 'form-control'}),
-            'state': forms.TextInput(attrs={'class': 'form-control'}),
-            'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
-            'country': forms.TextInput(attrs={'class': 'form-control'}),
-        }
-        '''
-        def __init__(self, *args, **kwargs):
-            self.request = kwargs.pop("request", None)
-            super(AddClientForm, self).__init__(*args, **kwargs)
-            self.fields['id_type'].disabled = True
-        
-        def clean_id_number(self):
-            id_number = self.cleaned_data.get("id_number")
-            if Client.objects.filter(id_number=id_number).exists():
-                raise forms.ValidationError("El número de identificación ya existe")
-            elif len(id_number) != 10:
-                raise forms.ValidationError("El número de identificación debe tener 10 dígitos")
-            return id_number
-=======
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
             'id_type': forms.HiddenInput(),
@@ -213,4 +182,3 @@ class ReadUpdateClientForm(forms.ModelForm):
         if old_id_number != new_id_number:
             raise forms.ValidationError('No se permite cambiar el número de identificación.')
         return new_id_number
->>>>>>> Stashed changes
