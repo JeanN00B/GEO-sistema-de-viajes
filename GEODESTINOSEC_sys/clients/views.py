@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import AddClientForm
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.db.models import Q
@@ -33,18 +32,17 @@ def clients_visualize(request):
         'clients': clients
     })
 
-User = get_user_model()
 
-@login_required
+@login_required #Open the form with a button, id_type is extracted from id_number
 def clients_create(request):
     if request.method == 'POST':
         form = AddClientForm(request.POST)
         if form.is_valid():
+            User = get_user_model()
             client = form.save(commit=False)
             client.salesman_refer = User.objects.get(username=request.user.username).userprofile
             client.save()
-
-            return redirect('/dashboard/clients/')
+            return redirect('/dashboard/clients/')            
         else:
             return render(request, 'clients/new_client.html',
                     {'form': form})
@@ -52,6 +50,7 @@ def clients_create(request):
         form = AddClientForm()
         return render(request, 'clients/new_client.html',
                     {'form': form})
+    
 
 @login_required
 def clients_read_update(request, pk):
@@ -66,3 +65,10 @@ def clients_read_update(request, pk):
     
     return render(request, 'clients/read_update_client.html',
                         {'form': form, 'client': client})
+
+
+@login_required
+def get_cities(request):
+    province = request.GET.get('province')
+    cities = PROVINCES_CITIES_ECUADOR.get(province, [])
+    return JsonResponse({'cities': cities})
