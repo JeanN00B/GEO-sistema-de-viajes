@@ -41,7 +41,7 @@ class AddClientForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AddClientForm, self).__init__(*args, **kwargs)
-
+        self.initial['id_type'] = 'CI'
 
     def clean(self):
         cleaned_data = super().clean()
@@ -104,9 +104,8 @@ class AddClientForm(forms.ModelForm):
         except:
             # Si no se pudo convertir a entero, o es una longitud distinta a 10 o 13,  es un pasaporte
             cleaned_data['id_type'] = 'PP'
-        print(cleaned_data)
-        return cleaned_data
 
+        return cleaned_data
 
     def clean_first_name(self):
         first_name = self.cleaned_data.get("first_name")
