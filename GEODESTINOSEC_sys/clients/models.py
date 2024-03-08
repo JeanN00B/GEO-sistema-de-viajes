@@ -2,62 +2,8 @@ from django.db import models
 from django.contrib import messages
 from django.core.validators import RegexValidator
 from static.metadata_dictionaries import *
+from phonenumber_field.modelfields import PhoneNumberField
 
-    "El Oro": ["Machala", "Arenillas", "Atahualpa", "Balsas", "Chilla", "El Guabo", "Huaquillas", "Marcabelí", "Pasaje", "Piñas", "Portovelo", "Santa Rosa", "Zaruma"],
-    "Esmeraldas": ["Esmeraldas", "Eloy Alfaro", "Muisne", "Quinindé", "San Lorenzo"],
-    "Imbabura": ["Ibarra", "Antonio Ante", "Cotacachi", "Otavalo", "Pimampiro", "San Miguel de Urcuquí"],
-    "Loja": ["Loja", "Calvas", "Catamayo", "Celica", "Chaguarpamba", "Espíndola", "Gonzanamá", "Macará", "Paltas", "Puyango", "Quilanga", "Saraguro", "Sozoranga", "Zapotillo"],
-    "Los Ríos": ["Babahoyo", "Baba", "Buena Fé", "Mocache", "Montalvo", "Palenque", "Puebloviejo", "Quevedo", "Quinsaloma", "Urdaneta", "Valencia", "Ventanas", "Vinces"],
-    "Manabí": ["Portoviejo", "Bolívar", "Chone", "El Carmen", "Flavio Alfaro", "Jama", "Jaramijó", "Jipijapa", "Junín", "Manta", "Montecristi", "Paján", "Pedernales", "Pichincha", "Puerto López", "Rocafuerte", "San Vicente", "Santa Ana", "Sucre", "Tosagua", "24 de Mayo"],
-    "Morona Santiago": ["Macas", "Gualaquiza", "Huamboya", "Limón Indanza", "Logroño", "Morona", "Pablo Sexto", "Palora", "San Juan Bosco", "Santiago", "Sucúa", "Taisha", "Tiwinza"],
-    "Napo": ["Tena", "Archidona", "Carlos Julio Arosemena Tola", "El Chaco", "Quijos"],
-    "Orellana": ["Orellana", "Aguarico", "Francisco de Orellana", "La Joya de los Sachas", "Loreto"],
-    "Pastaza": ["Puyo", "Arajuno", "Mera", "Santa Clara"],
-    "Pichincha": ["Quito", "Cayambe", "Mejía", "Pedro Moncayo", "Pedro Vicente Maldonado", "Puerto Quito", "Rumiñahui", "San Miguel de los Bancos"],
-    "Santa Elena": ["Santa Elena", "La Libertad", "Salinas"],
-    (province, province.capitalize()) for province in PROVINCES_CITIES_ECUADOR.keys()
-    ]
-# All available cities in Ecuador, to validate the city field
-CITIES_CHOICES = [
-    ]
-    ('O', 'Otro')
-    ]
-CIVIL_STATUS_CHOICES = [
-    ('s', 'Soltero'), 
-    ('c', 'Casado'), 
-    ('v', 'Viudo'),
-    ]
-ID_TYPE_CHOICES = [
-    ('RUC', 'RUC'),
-CLIENT_TYPE_CHOICES = [
-    ('P', 'prospecto'),
-    ]
-    ('N', 'Natural'),
-    ]
-    ("USA", "Estados Unidos"), ("CAN", "Canadá"), ("MEX", "México"), ("UK", "Reino Unido"),
-    ("POR", "Portugal"), ("BRA", "Brasil"), ("ARG", "Argentina"), ("CHI", "Chile"),
-    ("PRK", "Corea del Norte"), ("COL", "Colombia"), ("VEN", "Venezuela"),
-    ("PER", "Perú"), ("ECU", "Ecuador"), ("CUB", "Cuba"), ("URY", "Uruguay"),
-    ("PAR", "Paraguay"), ("BOL", "Bolivia"), ("PAN", "Panamá"), ("CRI", "Costa Rica"),
-    ("HON", "Honduras"), ("GTM", "Guatemala"), ("SLV", "El Salvador"), ("NIC", "Nicaragua"),
-    ("HAI", "Haití"), ("BAH", "Bahamas"), ("BRB", "Barbados"), ("SUR", "Surinam"),
-    ("GUY", "Guyana"), ("ATG", "Antigua y Barbuda"), ("DMA", "Dominica"), ("LCA", "Santa Lucía"),
-    ("KNA", "San Cristóbal y Nieves"), ("VCT", "San Vicente y las Granadinas"), ("GRD", "Granada"), ("ISL", "Islandia"),
-    ("MDA", "Moldavia"), ("EST", "Estonia"), ("LVA", "Letonia"), ("LTU", "Lituania"),
-    ("SVK", "Eslovaquia"), ("SVN", "Eslovenia"), ("HRV", "Croacia"), ("BIH", "Bosnia y Herzegovina"),
-    ("MKD", "Macedonia del Norte"), ("SRB", "Serbia"), ("MNE", "Montenegro"), ("ALB", "Albania"),
-    ("AND", "Andorra"), ("MCO", "Mónaco"), ("LIE", "Liechtenstein"), ("LUX", "Luxemburgo"),
-    ("MHL", "Islas Marshall"), ("FSM", "Micronesia"), ("PLW", "Palaos"), ("NRU", "Nauru"),
-    ("KIR", "Kiribati"), ("TUV", "Tuvalu"), ("TON", "Tonga"), ("WSM", "Samoa"),
-    ("VUT", "Vanuatu"), ("CYP", "Chipre"), ("MLT", "Malta"), ("CZE", "República Checa"),
-    ("VAT", "Ciudad del Vaticano"), ("STP", "Santo Tomé y Príncipe"), ("TLS", "Timor Oriental"),
-    ("SYC", "Seychelles"), ("MUS", "Mauricio"), ("CPV", "Cabo Verde"), ("COM", "Comoras"),
-    ("MDG", "Madagascar"), ("MDV", "Maldivas"), ("REU", "Reunión"), ("SHN", "Santa Elena, Ascensión y Tristán de Acuña"),
-    ("CCK", "Islas Cocos"), ("CXR", "Isla de Navidad"), ("PCN", "Islas Pitcairn"), ("TKL", "Tokelau"),
-    ("WLF", "Wallis y Futuna"), ("ALA", "Islas Åland"), ("FRO", "Islas Feroe"), ("GRL", "Groenlandia"),
-    ("GGY", "Guernsey"), ("IMN", "Isla de Man"), ("ESH", "Sáhara Occidental"), ("PLS", "Palesina"),
-    ("CHE", "Suiza"), ("NZL", "Nueva Zelanda"), ("MLT", "Malta"), ("IRL", "Irlanda"),
-    ("HUN", "Hungría"), ("GRC", "Grecia"), ("FIN", "Finlandia"), ("DNK", "Dinamarca"),
 
 class Client(models.Model):
     # nro, primary key, 10 o passport -> validar con algoritmo?
