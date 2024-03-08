@@ -41,7 +41,6 @@ class AddClientForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AddClientForm, self).__init__(*args, **kwargs)
-        #self.fields['id_type'].disabled = True
 
 
     def clean(self):
@@ -105,7 +104,7 @@ class AddClientForm(forms.ModelForm):
         except:
             # Si no se pudo convertir a entero, o es una longitud distinta a 10 o 13,  es un pasaporte
             cleaned_data['id_type'] = 'PP'
-        
+        print(cleaned_data)
         return cleaned_data
 
 
@@ -172,7 +171,7 @@ class ReadUpdateClientForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['id_type'].widget.attrs['readonly'] = True
+        #self.fields['id_type'].widget.attrs['readonly'] = True
         self.fields['id_number'].disabled = True
 
     def clean_id_number(self):

@@ -8,9 +8,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 class Client(models.Model):
     # nro, primary key, 10 o passport -> validar con algoritmo?
     id_number = models.CharField(max_length=20, primary_key=True, null=False, validators=[
-        RegexValidator(regex='(^\d{10}||^w*)$', message='Error ID/RUC/Pasaporte no válido!', code='nomatch')])
+        RegexValidator(regex='(^\d{10}|^w*)$', message='Error ID/RUC/Pasaporte no válido!', code='nomatch')])
     
-    id_type = models.CharField(max_length=3, null=True, choices=ID_TYPE_CHOICES, default=None)
+    id_type = models.CharField(max_length=3, null=True, choices=ID_TYPE_CHOICES, default='None')
     
     client_type = models.CharField(max_length=2, null=False, choices=CLIENT_TYPE_CHOICES, default='P')
 
