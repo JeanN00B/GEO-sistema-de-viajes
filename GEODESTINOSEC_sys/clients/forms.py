@@ -1,11 +1,14 @@
 from django import forms
 from .models import Client
+from django_select2 import forms as s2forms
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
+import cities_light
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, MultiField, HTML, Fieldset, ButtonHolder, Column, Row, Field, Div
+from crispy_tailwind.layout import Submit
 
 class AddClientForm(forms.ModelForm):
-    phone = PhoneNumberField(
-        widget=PhoneNumberPrefixWidget(initial='EC'))
     class Meta:
         model = Client
         exclude = ['salesman_refer']
@@ -14,7 +17,7 @@ class AddClientForm(forms.ModelForm):
             'id_type': 'Tipo de Identificación',
             'client_type': 'Tipo de Cliente',
             'first_name': 'Primer Nombre',
-            'image': 'Foto',
+            'image': 'Foto del cliente',
             'second_name': 'Segundo Nombre',
             'last_name': 'Primer Apellido',
             'sur_name': 'Segundo Apellido',
@@ -22,27 +25,82 @@ class AddClientForm(forms.ModelForm):
             'civil_status': 'Estado Civil',
             'phone': 'Teléfono celular',
             'email': 'Correo electrónico',
-            'province': 'Provincia / Estado',
-            'city': 'Ciudad de domicilio',
+            'res_city': 'Ciudad / Provincia / País',
+            'academic_level': 'Nivel Académico',
             'address': 'Dirección',
             'person_type': 'Tipo de Persona',
             'nationality': 'Nacionalidad',
             'date_of_birth': 'Fecha de Nacimiento',
             'budget_capacity': 'Nivel de gasto',
-            'work_industry': 'Industria de Trabajo',
+            'work_industry': 'Sector ocupacional',
             'work_position': 'Cargo de Trabajo',
             'company_name': 'Nombre de la Empresa',
             'additional_info': 'Información Adicional',
+            'work_type': 'Tipo de Trabajo',
         }
+        
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
             'id_type': forms.HiddenInput(),
+            'address': forms.Textarea(attrs={'rows': 3}),
+            'additional_info': forms.Textarea(attrs={'rows': 3}),
         }
+
+    phone = PhoneNumberField(
+        label='Teléfono celular',
+        widget=PhoneNumberPrefixWidget(
+            number_attrs={'class': 'ml-1 form-control bg-white rounded-lg border border-gray-300 py-2 px-4',
+                          'style': 'width: 53%;'},
+            country_attrs={'class': 'mr-1 form-control bg-white rounded-lg border border-gray-300 py-2 px-2',
+                            'style': 'width: 44%;'},
+            initial='EC',
+            )
+        )
+    
+    res_city = forms.ModelChoiceField(
+        label='Ciudad / Provincia / País',
+        queryset=cities_light.models.City.objects.all(),
+        widget=s2forms.Select2Widget(),
+        )
 
     def __init__(self, *args, **kwargs):
         super(AddClientForm, self).__init__(*args, **kwargs)
         self.initial['id_type'] = 'CI'
-
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field(
+                Row(
+                    Column(
+                        HTML('<h2 class="my-2 py-1 text-xl font-bold text-white bg-blue-400 rounded-lg text-center">Datos principales</h2>'),
+                        'id_number', 'first_name', 'second_name', 'last_name', 
+                        'sur_name', 'phone', 'email', 'additional_info',
+                        style="margin-bottom: 5px; border: 2px solid #a4a5a5;",
+                        title="Datos básicos",
+                        css_class="w-1/3 mx-1 px-2 py-2 form-group"
+                    ),
+                    Column(
+                        HTML('<h2 class="my-2 py-1 text-xl font-bold text-white bg-blue-400 rounded-lg text-center">Datos secundarios</h2>'),
+                        'image', 'gender', 'civil_status', 'person_type', 
+                        'date_of_birth', 'budget_capacity',
+                        style="margin-bottom: 5px; border: 2px solid #a4a5a5;",
+                        title="Datos adicionales",
+                        css_class="w-1/3 mx-1 px-2 py-2 form-group"
+                    ),
+                    Column(
+                        HTML('<h2 class="my-2 py-1 text-xl font-bold text-white bg-blue-400 rounded-lg text-center">Datos de ubicación</h2>'),
+                        'res_city', 'address', 
+                        HTML('<h2 class="my-2 py-1 text-xl font-bold text-white bg-blue-400 rounded-lg text-center">Datos laborales</h2>'),
+                        'academic_level', 'work_type', 'work_industry', 'work_position', 'company_name',
+                        style="margin-bottom: 5px; border: 2px solid #a4a5a5;",
+                        title="Datos adicionales",
+                        css_class="w-1/3 mx-1 px-2 py-2 form-group"
+                    ),
+                ),
+                Submit('submit', 'Guardar', css_class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center justify-center'),
+                css_class="flex justify-center"
+            ),
+        )
+        
     def clean(self):
         cleaned_data = super().clean()
         id_number = self.cleaned_data.get("id_number")
@@ -55,7 +113,7 @@ class AddClientForm(forms.ModelForm):
 
         try:
             # Natural person ID / RUC validation
-            # If not -> PP by default
+            # If not -> PP by defaultpdb.set_trace()
             if (len(str(id_number)) in [10,13]) and id_number.isdigit():
                 if (int(id_number[:2]) > 0) and (int(id_number[:2]) <= 24):
                     id_val = str(id_number)[:10]
@@ -130,6 +188,8 @@ class AddClientForm(forms.ModelForm):
         if sur_name and not sur_name.isalpha():
             raise forms.ValidationError("El segundo apellido no puede contener números")
         return sur_name
+
+
 
 class ReadUpdateClientForm(forms.ModelForm):
     phone = PhoneNumberField(

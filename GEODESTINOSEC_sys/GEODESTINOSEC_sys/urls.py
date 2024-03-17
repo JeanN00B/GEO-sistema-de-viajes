@@ -4,6 +4,7 @@ from core.views import index
 from django.contrib.auth import views
 
 urlpatterns = [
+    path("select2/", include("django_select2.urls")),
     path('', views.LoginView.as_view(template_name='sysuserprofile/login.html'), name='index'),
     path('dashboard/', include('dashboard.urls')),
     path('dashboard/clients/', include('clients.urls')),
