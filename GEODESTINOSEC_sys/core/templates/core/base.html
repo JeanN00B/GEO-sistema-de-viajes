@@ -6,7 +6,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script type="text/javascript" src="{% static 'core/js/htmx.min.js'%}" defer></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <script src="http://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <title>GEODESTINOSEC - {% block title %}{% endblock %}</title>
     </head>
     <body>
@@ -38,8 +41,12 @@
             {% endif %}
 
             {% block content %}
+
             {% endblock %}
         </div>
+        {% block scripts %}
+
+        {% endblock %}
     </body>
 
     <footer class="py-8 text-center bg-gray-200">
@@ -48,5 +55,9 @@
         <span class="text-xs text-red-500">❤</span>
         <span class="text-xs"> por <a href="https://www.linkedin.com/in/jean-camacho-126126212/" class="text-blue-800">Jean Camacho</a></span>
     </footer>
+
+    {% block stylesheets %}
+
+    {% endblock %}
 
 </html>

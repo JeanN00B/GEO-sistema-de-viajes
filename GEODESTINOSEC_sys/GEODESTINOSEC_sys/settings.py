@@ -22,6 +22,15 @@ LOGOUT_REDIRECT_URL = 'index'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+
+CITIES_LIGHT_TRANSLATION_LANGUAGES = ['es']
+CITIES_LIGHT_INCLUDE_COUNTRIES = []
+CITIES_LIGHT_INCLUDE_CITY_TYPES = ['PPL', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PPLC', 'PPLCH', 'PPLF', 'PPLG', 'PPLH', 'PPLL', 'PPLQ', 'PPLR', 'PPLS', 'PPLW', 'PPLX', 'STLMT', 'STLT', 'STLTT', 'STLTX']
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+CRISPY_TEMPLATE_PACK = "tailwind"
+CRISPY_FAIL_SILENTLY = not DEBUG
+
+
 # Application definition
 # TO-DO AND REMOVE: user:admin, pass:admin
 INSTALLED_APPS = [
@@ -37,8 +46,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_htmx',
     'phonenumber_field',
-    'bootstrap_datepicker_plus',
+    'bootstrap_datepicker_plus',# Not used by now, check before production!
+    'cities_light',
+    'django_select2', # Not used -> Replace .selec2() from <script>?
+    'crispy_forms',
+    'crispy_tailwind',
 ]
+
 
 
 MIDDLEWARE = [
@@ -52,7 +66,9 @@ MIDDLEWARE = [
     'django_htmx.middleware.HtmxMiddleware',
 ]
 
+
 ROOT_URLCONF = 'GEODESTINOSEC_sys.urls'
+
 
 TEMPLATES = [
     {

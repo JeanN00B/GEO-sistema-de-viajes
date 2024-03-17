@@ -4,7 +4,8 @@ from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.db.models import Q
 from .forms import AddClientForm, ReadUpdateClientForm
-from .models import Client, PROVINCES_CITIES_ECUADOR
+from .models import Client
+from cities_light.models import City
 
 
 @login_required
@@ -23,6 +24,7 @@ def search_name(request):
     else:
         clients = Client.objects.all()
     return render(request, 'clients/clients_search_result.html', {'clients': clients})
+
 
 @login_required
 def clients_visualize(request):
@@ -68,7 +70,10 @@ def clients_read_update(request, pk):
 
 
 @login_required
-def get_cities(request):
-    province = request.GET.get('province')
-    cities = PROVINCES_CITIES_ECUADOR.get(province, [])
-    return JsonResponse({'cities': cities})
+def search_cities(request):
+    if request.is_ajax():
+        search_term = request.GET.get('q', '')
+        ciudades = City.objects.filter(display_name__icontains=search_term)
+        return JsonResponse(list(ciudades.values('id', 'display_name')), safe=False)
+    else:
+        return JsonResponse({'error': 'No se permiten solicitudes no AJAX'}, status=400)

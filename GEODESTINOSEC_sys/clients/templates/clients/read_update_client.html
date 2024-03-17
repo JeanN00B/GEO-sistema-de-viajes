@@ -6,7 +6,7 @@
 {% block content %}
 
 <h1 class="px-6 text-2xl font-bold">Editar Cliente - {{ client.first_name }} {{ client.second_name|default:'' }} {{ client.last_name }} {{ client.sur_name|default:'' }}</h1>
-<h2 class="px-6 text-lg font-bold">Número de CI: {{ client.id_number }}</h2>    
+<h2 class="px-6 text-lg font-bold">Número de ID: {{ client.id_number }}</h2>    
 <div class = 'py-6 px-6'>
     <form method="POST" action=".">
         {% csrf_token %}
@@ -21,4 +21,9 @@
 </div>
 {% endblock %}
 
-<script src="{% static 'js/client_form.js' %}"></script>
+{% block scripts %}
+    <script>
+        $("#id_work_industry").select2();
+        $("#id_res_city").select2();
+    </script>
+{% endblock %}
