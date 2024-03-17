@@ -4,13 +4,45 @@
 {% block title %} Nuevo Cliente {% endblock %}
 
 {% block content %}
-    <div class = 'py-6 px-6'>
+
+    <div class = 'py-1 px-1'>
+        {% load tailwind_filters %}
+        {% load crispy_forms_tags %}
         <form method="post" action=".">
             {% csrf_token %}
-
-            {{ form.as_p }}
-
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Guardar</button>
+            {% crispy form %}
+            <!--{{ form|crispy }}-->
         </form>
     </div>
 {% endblock %}
+
+{% block scripts %}
+    <script>
+        $("#id_res_city").select2({
+            minimumInputLength: 3,
+            caches: true,
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .select2-container{
+        border: 1px solid #e2e8f0;
+        border-radius: .5rem;
+        line-height: 1.5;
+        padding: .5rem 1rem .5rem 1rem;
+        background-color: white;
+        border-width: 1px;
+    } 
+    .select2-container--default .select2-selection--single{
+        border: none;
+    }
+
+
+    .select2-selection__arrow {
+        display: none;
+    }
+</style>
+{% endblock %}
+

@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.core.validators import RegexValidator
 from static.metadata_dictionaries import *
 from phonenumber_field.modelfields import PhoneNumberField
-
+import cities_light
 
 class Client(models.Model):
     # nro, primary key, 10 o passport -> validar con algoritmo?
@@ -35,33 +35,27 @@ class Client(models.Model):
     # current session user
     salesman_refer = models.ForeignKey('sysuserprofile.UserProfile', on_delete=models.SET_NULL, null=True, blank=True)  
     
-    province = models.CharField(max_length=20, null=True, blank=True, choices=PROVINCES_CHOICES, default=None)
-    
-    city = models.CharField(max_length=32, null=True, blank=True, choices=CITIES_CHOICES, default=None)
-    
+    # TODO EXTRACT city.province & city.country from the city_light model
+    res_city = models.ForeignKey('cities_light.City', on_delete=models.SET_NULL, null=True, blank=True, default=None)
     address = models.TextField(max_length=100, null=True, blank=True, default=None)
     
     person_type = models.CharField(max_length=4, null=True, blank=True, choices=PERSON_TYPE_CHOICES, default=None)
-    
-    nationality = models.CharField(max_length=20, null=True, blank=True, default=None, choices=NATIONALITIES_CHOICES)
-    
+        
     date_of_birth = models.DateField(null=True, blank=True)
     
     budget_capacity = models.CharField(max_length=2, null=True, blank=True, default=None, choices=BUDGET_CAPACITY_CHOICES)
 
-    work_industry = models.CharField(max_length=50, null=True, blank=True, default=None)
+    academic_level = models.CharField(max_length=2, null=True, blank=True, default=None, choices=ACADEMIC_LEVEL_CHOICES)
+    work_type = models.CharField(max_length=2, null=True, blank=True, default=None, choices=WORK_TYPE_CHOICES)
+    work_industry = models.CharField(max_length=5, null=True, blank=True, default=None, choices=WORK_INDUSTRY_CHOICES)
     work_position = models.CharField(max_length=50, null=True, blank=True, default=None)
     company_name = models.CharField(max_length=50, null=True, blank=True, default=None)
     additional_info = models.TextField(max_length=100, null=True, blank=True, default=None)
     
+
+
     def __str__(self):
         return f'{self.first_name} {self.last_name} --- {self.id_number}'
 
     def save(self, *args, **kwargs):
-        # 2. validate city in province
-        if self.province != None and self.city != None:
-            if self.city not in PROVINCES_CITIES_ECUADOR[self.province]:
-                raise ValueError('City has to belong to the selected province')
-        else:
-            pass
         super().save(*args, **kwargs)
