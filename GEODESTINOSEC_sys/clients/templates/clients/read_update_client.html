@@ -8,10 +8,11 @@
 <h1 class="px-6 text-2xl font-bold">Editar Cliente - {{ client.first_name }} {{ client.second_name|default:'' }} {{ client.last_name }} {{ client.sur_name|default:'' }}</h1>
 <h2 class="px-6 text-lg font-bold">Número de ID: {{ client.id_number }}</h2>    
 <div class = 'py-6 px-6'>
+    {% load tailwind_filters %}
+    {% load crispy_forms_tags %}
     <form method="POST" action=".">
         {% csrf_token %}
-
-        {{ form.as_p }}
+        {% crispy form %}
 
         <div class="h-full flex-box space-x-4 items-stretch">
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center justify-center">Guardar cambios</button>

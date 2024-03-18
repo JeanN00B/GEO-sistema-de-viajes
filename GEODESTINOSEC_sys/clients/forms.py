@@ -7,6 +7,10 @@ import cities_light
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, MultiField, HTML, Fieldset, ButtonHolder, Column, Row, Field, Div
 from crispy_tailwind.layout import Submit
+from static.metadata_dictionaries import *
+from image_uploader_widget.widgets import ImageUploaderWidget
+
+
 
 class AddClientForm(forms.ModelForm):
     class Meta:
@@ -14,7 +18,7 @@ class AddClientForm(forms.ModelForm):
         exclude = ['salesman_refer']
         labels = {
             'id_number': 'Número de Identificación',
-            'id_type': 'Tipo de Identificación',
+            #'id_type': 'Tipo de Identificación',
             'client_type': 'Tipo de Cliente',
             'first_name': 'Primer Nombre',
             'image': 'Foto del cliente',
@@ -38,13 +42,52 @@ class AddClientForm(forms.ModelForm):
             'additional_info': 'Información Adicional',
             'work_type': 'Tipo de Trabajo',
         }
-        
-        widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
-            'id_type': forms.HiddenInput(),
-            'address': forms.Textarea(attrs={'rows': 3}),
-            'additional_info': forms.Textarea(attrs={'rows': 3}),
-        }
+
+    date_of_birth = forms.DateField(
+        label='Fecha de Nacimiento',
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        required=False,
+    )
+
+    gender = forms.ChoiceField(
+        label='Género',
+        widget=forms.RadioSelect(),
+        choices=GENDER_CHOICES,
+        required=False,
+    )
+
+    id_type = forms.ChoiceField(
+        choices=ID_TYPE_CHOICES,
+        widget = forms.HiddenInput(
+            attrs={'value': 'PP', 'style': 'display: none'},
+        ),
+    )
+
+    person_type = forms.ChoiceField(
+        label='Tipo de Persona',
+        choices=PERSON_TYPE_CHOICES,
+        widget=forms.RadioSelect(),
+        required=False,
+    )
+
+    address = forms.Field(
+        label='Dirección',
+        widget=forms.Textarea(attrs={'rows': 3}),
+        required=False,
+    )
+
+    additional_info = forms.Field(
+        label='Información Adicional',
+        widget=forms.Textarea(attrs={'rows': 3}),
+        required=False,
+    )
+
+    client_type = forms.ChoiceField(
+        choices=CLIENT_TYPE_CHOICES,
+        initial='P',
+        widget=forms.RadioSelect(),
+        required=False,
+    )
 
     phone = PhoneNumberField(
         label='Teléfono celular',
@@ -61,19 +104,25 @@ class AddClientForm(forms.ModelForm):
         label='Ciudad / Provincia / País',
         queryset=cities_light.models.City.objects.all(),
         widget=s2forms.Select2Widget(),
+        required=False,
         )
+    
+    image = forms.ImageField(
+        label='Foto del cliente',
+        required= False,
+    )
 
     def __init__(self, *args, **kwargs):
         super(AddClientForm, self).__init__(*args, **kwargs)
-        self.initial['id_type'] = 'CI'
+        #self.initial['id_type'] = 'CI'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Field(
                 Row(
                     Column(
                         HTML('<h2 class="my-2 py-1 text-xl font-bold text-white bg-blue-400 rounded-lg text-center">Datos principales</h2>'),
-                        'id_number', 'first_name', 'second_name', 'last_name', 
-                        'sur_name', 'phone', 'email', 'additional_info',
+                        'id_number', 'id_type', 'first_name', 'second_name', 'last_name', 
+                        'sur_name', 'phone', 'email', 'client_type',
                         style="margin-bottom: 5px; border: 2px solid #a4a5a5;",
                         title="Datos básicos",
                         css_class="w-1/3 mx-1 px-2 py-2 form-group"
@@ -81,7 +130,7 @@ class AddClientForm(forms.ModelForm):
                     Column(
                         HTML('<h2 class="my-2 py-1 text-xl font-bold text-white bg-blue-400 rounded-lg text-center">Datos secundarios</h2>'),
                         'image', 'gender', 'civil_status', 'person_type', 
-                        'date_of_birth', 'budget_capacity',
+                        'date_of_birth', 'budget_capacity', 'additional_info',
                         style="margin-bottom: 5px; border: 2px solid #a4a5a5;",
                         title="Datos adicionales",
                         css_class="w-1/3 mx-1 px-2 py-2 form-group"
@@ -163,6 +212,7 @@ class AddClientForm(forms.ModelForm):
             # Si no se pudo convertir a entero, o es una longitud distinta a 10 o 13,  es un pasaporte
             cleaned_data['id_type'] = 'PP'
 
+        print([f'{value}: {cleaned_data[value]}\n' for value in cleaned_data])
         return cleaned_data
 
     def clean_first_name(self):
@@ -188,6 +238,11 @@ class AddClientForm(forms.ModelForm):
         if sur_name and not sur_name.isalpha():
             raise forms.ValidationError("El segundo apellido no puede contener números")
         return sur_name
+
+
+
+
+
 
 
 
