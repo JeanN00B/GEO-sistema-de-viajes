@@ -4,12 +4,12 @@ from django_select2 import forms as s2forms
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 import cities_light
+from crispy_forms.bootstrap import Tab, TabHolder, UneditableField, Modal
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, MultiField, HTML, Fieldset, ButtonHolder, Column, Row, Field, Div
-from crispy_tailwind.layout import Submit
+from crispy_forms.layout import Layout, HTML, ButtonHolder, Column, Row, Field, Div, Submit, Button
 from static.metadata_dictionaries import *
-from image_uploader_widget.widgets import ImageUploaderWidget
-
+#from image_uploader_widget.widgets import ImageUploaderWidget
+from sysuserprofile.models import UserProfile
 
 
 class AddClientForm(forms.ModelForm):
@@ -45,7 +45,11 @@ class AddClientForm(forms.ModelForm):
 
     date_of_birth = forms.DateField(
         label='Fecha de Nacimiento',
-        widget=forms.DateInput(attrs={'type': 'date'}),
+        widget=forms.SelectDateWidget(attrs={
+            'style': 'width: 32%; margin-left: 0.25rem; background-color: white; border-radius: 0.5rem; border: 1px solid #D1D5DB; padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 0.2rem; padding-right: 0.2rem;',},
+            years=range(1880, 2030),
+            empty_label=("Año", "Mes", "Día"),
+            ),
         required=False,
     )
 
@@ -83,6 +87,7 @@ class AddClientForm(forms.ModelForm):
     )
 
     client_type = forms.ChoiceField(
+        label='Tipo de Cliente',
         choices=CLIENT_TYPE_CHOICES,
         initial='P',
         widget=forms.RadioSelect(),
@@ -130,7 +135,7 @@ class AddClientForm(forms.ModelForm):
                     Column(
                         HTML('<h2 class="my-2 py-1 text-xl font-bold text-white bg-blue-400 rounded-lg text-center">Datos secundarios</h2>'),
                         'image', 'gender', 'civil_status', 'person_type', 
-                        'date_of_birth', 'budget_capacity', 'additional_info',
+                        Field('date_of_birth'), 'budget_capacity', 'additional_info',
                         style="margin-bottom: 5px; border: 2px solid #a4a5a5;",
                         title="Datos adicionales",
                         css_class="w-1/3 mx-1 px-2 py-2 form-group"
@@ -247,8 +252,6 @@ class AddClientForm(forms.ModelForm):
 
 
 class ReadUpdateClientForm(forms.ModelForm):
-    phone = PhoneNumberField(
-        widget=PhoneNumberPrefixWidget(initial='EC'))
     class Meta:
         model = Client
         exclude = []
@@ -257,36 +260,246 @@ class ReadUpdateClientForm(forms.ModelForm):
             'id_type': 'Tipo de Identificación',
             'client_type': 'Tipo de Cliente',
             'first_name': 'Primer Nombre',
+            'image': 'Foto del cliente',
             'second_name': 'Segundo Nombre',
             'last_name': 'Primer Apellido',
             'sur_name': 'Segundo Apellido',
-            'image': 'Foto',
             'gender': 'Género',
-            'salesman_refer': 'Vendedor Referente',
             'civil_status': 'Estado Civil',
             'phone': 'Teléfono celular',
             'email': 'Correo electrónico',
-            'province': 'Provincia',
-            'city': 'Ciudad',
+            'res_city': 'Ciudad / Provincia / País',
+            'academic_level': 'Nivel Académico',
             'address': 'Dirección',
             'person_type': 'Tipo de Persona',
             'nationality': 'Nacionalidad',
             'date_of_birth': 'Fecha de Nacimiento',
-            'budget_capacity': 'Capacidad de Presupuesto',
-            'work_industry': 'Industria de Trabajo',
+            'budget_capacity': 'Nivel de gasto',
+            'work_industry': 'Sector ocupacional',
             'work_position': 'Cargo de Trabajo',
             'company_name': 'Nombre de la Empresa',
             'additional_info': 'Información Adicional',
+            'work_type': 'Tipo de Trabajo',
         }
-        widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
-            'id_number': forms.HiddenInput(),
-        }
+     
+    id_number = forms.CharField(
+        label='Número de Identificación',
+        disabled=True,
+        widget=forms.HiddenInput(),
+    )
+
+    date_of_birth = forms.DateField(
+        label='Fecha de Nacimiento',
+        widget=forms.SelectDateWidget(attrs={
+            'class': 'pointer-events-none opacity-50',
+            'style': 'width: 30%; margin-left: 0.25rem; background-color: white; border-radius: 0.5rem; border: 1px solid #D1D5DB; padding-top: 0.5rem; padding-bottom: 0.5rem; padding-left: 0.2rem; padding-right: 0.2rem;',},
+            years=range(1880, 2030),
+            empty_label=("Año", "Mes", "Día"),
+            ),
+        required=False,
+    )
+
+    gender = forms.ChoiceField(
+        label='Género',
+        widget=forms.RadioSelect(),
+        choices=GENDER_CHOICES,
+        required=False,
+    )
+
+    id_type = forms.ChoiceField(
+        label='Tipo de Identificación',
+        choices=ID_TYPE_CHOICES,
+        widget=forms.RadioSelect(),
+    )
+
+    person_type = forms.ChoiceField(
+        label='Tipo de Persona',
+        choices=PERSON_TYPE_CHOICES,
+        widget=forms.RadioSelect(),
+        required=False,
+    )
+
+    civil_status = forms.ChoiceField(
+        label='Estado Civil',
+        choices=CIVIL_STATUS_CHOICES,
+        widget=forms.RadioSelect(),
+        required=False,
+    )
+
+    budget_capacity = forms.ChoiceField(
+        label='Nivel de gasto',
+        choices=BUDGET_CAPACITY_CHOICES,
+        widget=forms.RadioSelect(),
+        required=False,
+    )
+
+    address = forms.Field(
+        label='Dirección',
+        widget=forms.Textarea(attrs={'rows': 3}),
+        required=False,
+    )
+
+    additional_info = forms.Field(
+        label='Información Adicional',
+        widget=forms.Textarea(attrs={'rows': 3}),
+        required=False,
+    )
+
+    client_type = forms.ChoiceField(
+        label='Tipo de Cliente',
+        choices=CLIENT_TYPE_CHOICES,
+        widget=forms.RadioSelect(),
+        required=False,
+    )
+
+    phone = PhoneNumberField(
+        label='Teléfono celular',
+        widget=PhoneNumberPrefixWidget(
+            number_attrs={'class': 'pointer-events-none opacity-50 ml-1 form-control bg-white rounded-lg border border-gray-300 py-2 px-4',
+                          'style': 'width: 45%;'},
+            country_attrs={'class': 'pointer-events-none opacity-50 mr-1 form-control bg-white rounded-lg border border-gray-300 py-2 px-2',
+                            'style': 'width: 45%;'},)
+        )
+    
+    res_city = forms.ModelChoiceField(
+        label='Ciudad / Provincia / País',
+        queryset=cities_light.models.City.objects.all(),
+        widget=s2forms.Select2Widget(),
+        required=False,
+        )
+    
+    image = forms.ImageField(
+        label='Foto del cliente',
+        required= False,
+    )
+
+    salesman_refer = forms.ModelChoiceField(
+        label='Vendedor referente',
+        queryset=UserProfile.objects.all(),
+        widget=forms.Select()
+    )
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        #self.fields['id_type'].widget.attrs['readonly'] = True
-        self.fields['id_number'].disabled = True
+        self.helper = FormHelper()
+        self.helper.label_class='block text-xs font-bold mb-2'
+        self.helper.layout = Layout(
+            Field(
+                Row(
+                    Column(
+                        #The image, fullname, id number and edit button\
+                        Div(
+                            Field('image',
+                                  css_class="pointer-events-none opacity-50",
+                                  id='editable',),
+                            css_class="w-full px-2 py-2 mb-2 form-group rounded-lg border-2 border-gray-500 bg-gray-50"
+                        ),
+                        Div(
+                            HTML('<h2 class="mb-2 text-l font-bold text-white bg-blue-400 rounded-lg text-center">Número de identificación</h2>'),
+                            HTML('<p class="mb-2 text-xl font-bold text-center">{{ form.id_number.value }}</p>'),
+                            css_class="px-2 py-2 mb-2 form-group rounded-lg border-2 border-gray-500 bg-gray-50",
+                        ),
+                        Div(
+                            HTML('<h2 class="mb-2 text-l font-bold text-white bg-blue-400 rounded-lg text-center">Nombre del cliente</h2>'),
+                            Div(
+                                Field('first_name', id='editable', css_class='mr-2 pointer-events-none opacity-50'), 
+                                Field('second_name', id='editable', css_class='mr-2 pointer-events-none opacity-50', ),
+                                Field('last_name', id='editable', css_class='mr-2 pointer-events-none opacity-50'),
+                                Field('sur_name', id='editable', css_class='mr-2 pointer-events-none opacity-50'),
+                                css_class="grid grid-cols-2 gap-2 ",
+                                style="font-size: 1em; font: bold;",
+                            ),
+                            css_class="px-2 py-2 mb-2 form-group rounded-lg border-2 border-gray-500 bg-gray-50",
+                        ),
+                        Div(
+                            Button('edit', 'Editar', css_id='edit-button', 
+                                   style='width: 45%;', css_class='text-l bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded items-center justify-center text-center'),
+                            Submit('submit', 'Guardar', css_id='submit-button', 
+                                   style='display: none; width: 45%;', css_class='text-l bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded items-center justify-center text-center'),
+                            HTML('<a href="{% url "clients" %}" style="width: 45%;" class="text-l bg-yellow-400 hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded items-center justify-center text-center">Regresar</a>'),
+                            css_class="flex justify-around align-center my-5",
+                        ),
+                        css_class="w-1/3 mx-1 px-2 py-2 form-group bg-gray-600",
+                    ),
+                    Column(
+                        #The divs with different fields to been displayed
+                        Row(
+                            Div(
+                                Field('phone', id='editable',), 
+                                Field('email', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('id_type', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('date_of_birth', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('client_type', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('salesman_refer', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('additional_info', id='editable', css_class='pointer-events-none opacity-50'),
+                                css_class='w-1/2 mx-1 px-2 py-2 form-group border-2 rounded-lg border-gray-500 bg-gray-50',
+                            ),
+                            Div(
+                                Field('gender', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('civil_status', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('person_type', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('budget_capacity', id='editable', css_class='pointer-events-none opacity-50'),
+                                css_class='w-1/2 mx-1 px-2 py-2 form-group border-2 rounded-lg border-gray-500 bg-gray-50'
+                            ),
+                            css_id='div1',
+                            style='display: flex;',
+                            css_class='tab-content flex flex-row',
+                        ),
+
+                        Row(
+                            Div(
+                                Field('res_city', id='id_res_city'), 
+                                Field('address', id='editable', css_class='pointer-events-none opacity-50'),
+                                css_class="mx-1 px-2 py-2 form-group border-2 rounded-lg border-gray-500 bg-gray-50"
+                            ),
+                            css_id='div2',
+                            style='display: none;',
+                            css_class='tab-content',
+                        ),
+                        Row(
+                            HTML('<p>Passport information comming...</p>'),
+                            css_id='div3',
+                            style='display: none;',
+                            css_class='tab-content',
+                        ),
+                        Row(
+                            Div(
+                                Field('academic_level', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('work_type', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('work_industry', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('work_position', id='editable', css_class='pointer-events-none opacity-50'), 
+                                Field('company_name', id='editable', css_class='pointer-events-none opacity-50'),
+                                css_class=" mx-1 px-2 py-2 form-group border-2 rounded-lg border-gray-500 bg-gray-50"
+                            ),
+                            css_id='div4',
+                            style='display: none;',
+                            css_class='tab-content',
+                        ),
+                        css_class="justify-center items-center flex w-1/2 mx-1 px-2 py-2 form-group bg-gray-300",
+                    ),
+                    Column(
+                        Button('edit', 'Información general', 
+                               css_class='show-div my-4 text-l bg-white text-black font-bold py-3 px-2 rounded items-center justify-center text-center', 
+                               data_target='#div1'),
+                        Button('edit', 'Información de domicilio', 
+                               css_class='show-div my-4 text-l bg-gray-500 text-white font-bold py-3 px-2 rounded items-center justify-center text-center', 
+                               data_target='#div2'),
+                        Button('edit', 'Información de viaje', 
+                               css_class='show-div my-4 text-l bg-gray-500 text-white font-bold py-3 px-2 rounded items-center justify-center text-center', 
+                               data_target='#div3'),
+                        Button('edit', 'Información laboral', 
+                               css_class='show-div my-4 text-l bg-gray-500 text-white font-bold py-3 px-2 rounded items-center justify-center text-center', 
+                               data_target='#div4'),
+                        css_class='w-15 mx-1 px-2 py-2 form-group bg-gray-600 flex flex-col items-stretch text-sm',
+                    ),
+                ),
+
+            ),
+        )
+
+
+
 
     def clean_id_number(self):
         # Validar si el id_number ha cambiado
@@ -295,3 +508,4 @@ class ReadUpdateClientForm(forms.ModelForm):
         if old_id_number != new_id_number:
             raise forms.ValidationError('No se permite cambiar el número de identificación.')
         return new_id_number
+

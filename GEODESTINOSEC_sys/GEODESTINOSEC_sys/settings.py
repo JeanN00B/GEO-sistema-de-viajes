@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'django_select2', # Not used -> Replace .selec2() from <script>?
     'crispy_forms',
     'crispy_tailwind',
-    'image_uploader_widget',
+    'crispy_bootstrap5', # Not used by now, check before production!
+    'image_uploader_widget', # Not used by now, check before production!
 ]
 
 

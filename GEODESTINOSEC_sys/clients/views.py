@@ -54,6 +54,8 @@ def clients_create(request):
                     {'form': form})
     
 
+
+
 @login_required
 def clients_read_update(request, pk):
     client = get_object_or_404(Client, pk=pk)
