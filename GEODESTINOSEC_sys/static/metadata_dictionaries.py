@@ -75,3 +75,33 @@ ACADEMIC_LEVEL_CHOICES = [
     ('MA', 'Maestría'),
     ('PH', 'Doctorado'),
     ]
+
+VISA_TYPE_CHOICES = [
+    ('TRS', 'Visa de turista ()'),
+    ('STU', 'Visa de estudiante ()'),
+    ('WRK', 'Visa de trabajo ()'),
+    ('BSN', 'Visa de negocios ()'),
+    ('FAM', 'Visa familiar ()'),
+    ('TRA', 'Visa de tránsito ()'),
+    ('DIP', 'Visa diplomática ()'),
+    ('OFF', 'Visa oficial ()'),
+    ('REL', 'Visa religiosa ()'),
+    ('MED', 'Visa médica ()'),
+    ('REF', 'Visa de refugiado ()'),
+    ('IMM', 'Visa de inmigrante ()'),
+    ]
+
+PASSPORT_TYPE_CHOICES = [
+    ('TRS', 'Visa de turista ()'),
+    ('STU', 'Visa de estudiante ()'),
+    ('WRK', 'Visa de trabajo ()'),
+    ('BSN', 'Visa de negocios ()'),
+    ('FAM', 'Visa familiar ()'),
+    ('TRA', 'Visa de tránsito ()'),
+    ('DIP', 'Visa diplomática ()'),
+    ('OFF', 'Visa oficial ()'),
+    ('REL', 'Visa religiosa ()'),
+    ('MED', 'Visa médica ()'),
+    ('REF', 'Visa de refugiado ()'),
+    ('IMM', 'Visa de inmigrante ()'),
+    ]

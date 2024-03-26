@@ -23,64 +23,62 @@
 {% endblock %}
 
 {% block scripts %}
-    <script>
-        // TODO fix the select2 for view/update template
-        $("#id_res_city").select2({
-            minimumInputLength: 3,
-            caches: true,
+<script>
+    // TODO fix the select2 for view/update template
+    $("#id_res_city").select2();
+</script>
+<script>
+    //BY DEFAULT, DISABLE THE FORM FIELDS -> type=radio
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('input[type="radio"]').forEach(function(element) {
+            element.disabled = true;
         });
-
-        //BY DEFAULT, DISABLE THE FORM FIELDS -> type=radio
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('input[type="radio"]').forEach(function(element) {
-                element.disabled = true;
-            });
-            document.querySelectorAll('#view-edit-form select, #id_res_city').forEach(function(element) {
-                element.classList.add('pointer-events-none');
-                element.classList.add('opacity-50');
-            });
+        document.querySelectorAll('#view-edit-form select').forEach(function(element) {
+            element.classList.add('pointer-events-none');
+            element.classList.add('opacity-50');
         });
+    });
 
-        // Enable the form fields for editing
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('edit-button').addEventListener('click', function() {
-                document.querySelectorAll('#view-edit-form select, #id_res_city, #id_date_of_birth_day, #id_date_of_birth_month, #id_date_of_birth_year, #editable, #id_phone_0, #id_phone_1, input[type="radio"]').forEach(function(element) {
-                    element.classList.remove('pointer-events-none');
-                    element.classList.remove('opacity-50');
-                    element.disabled = false;
+    // Enable the form fields for editing
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('edit-button').addEventListener('click', function() {
+            document.querySelectorAll('#view-edit-form select, #id_date_of_birth_day, #id_date_of_birth_month, #id_date_of_birth_year, #editable, #id_phone_0, #id_phone_1, input[type="radio"]').forEach(function(element) {
+                element.classList.remove('pointer-events-none');
+                element.classList.remove('opacity-50');
+                element.disabled = false;
+            });
+            document.getElementById('edit-button').style.display = 'none';                                   
+            document.getElementById('submit-button').style.display = 'block';
+        });
+    });
+
+    // Tabs behavior to divs in edit-view client
+    document.addEventListener('DOMContentLoaded', function () {
+        var tabButtons = document.querySelectorAll('.show-div');
+        var tabContents = document.querySelectorAll('.tab-content');
+        tabButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var targetId = button.getAttribute('data-target');
+                tabButtons.forEach(function(btn) {
+                    btn.classList.remove('active');
+                    btn.classList.remove('text-black');
+                    btn.classList.remove('bg-white');
+                    btn.classList.add('text-white');
+                    btn.classList.add('bg-gray-500');
                 });
-                document.getElementById('edit-button').style.display = 'none';                                   
-                document.getElementById('submit-button').style.display = 'block';
-            });
-        });
+                button.classList.remove('text-white');
+                button.classList.remove('bg-gray-500');
+                button.classList.add('active');
+                button.classList.add('text-black');
+                button.classList.add('bg-white');
 
-        // Tabs behavior to divs in edit-view client
-        document.addEventListener('DOMContentLoaded', function () {
-            var tabButtons = document.querySelectorAll('.show-div');
-            var tabContents = document.querySelectorAll('.tab-content');
-            tabButtons.forEach(function(button) {
-                button.addEventListener('click', function() {
-                    var targetId = button.getAttribute('data-target');
-                    tabButtons.forEach(function(btn) {
-                        btn.classList.remove('active');
-                        btn.classList.remove('text-black');
-                        btn.classList.remove('bg-white');
-                        btn.classList.add('text-white');
-                        btn.classList.add('bg-gray-500');
-                    });
-                    button.classList.remove('text-white');
-                    button.classList.remove('bg-gray-500');
-                    button.classList.add('active');
-                    button.classList.add('text-black');
-                    button.classList.add('bg-white');
-
-                    tabContents.forEach(function(content) {
-                        content.style.display = 'none';
-                    });
-                    document.querySelector(targetId).style.display = 'flex';
+                tabContents.forEach(function(content) {
+                    content.style.display = 'none';
                 });
+                document.querySelector(targetId).style.display = 'flex';
             });
         });
+    });
 
-    </script>
+</script>
 {% endblock %}

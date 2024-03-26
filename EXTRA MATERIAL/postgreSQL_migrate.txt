@@ -1,0 +1,12 @@
+sudo su — postgres
+psql
+===================
+postgres - 12341234
+===================
+
+
+create user geo_admin; 
+create database geo_db;
+alter role geo_admin with password '12341234';
+grant all privileges on database geo_db to geo_admin;
+alter database geo_db owner to geo_admin;

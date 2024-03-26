@@ -1,0 +1,55 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %} Nueva Visa {% endblock %}
+{% block content %}
+    <div class = 'py-1 px-1'>
+        {% load tailwind_filters %}
+        {% load crispy_forms_tags %}
+        <form method="post" action=".">
+            {% csrf_token %}
+            {% crispy form %}
+            <!--{{ form|crispy }}-->
+        </form>
+    </div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $("#id_visa_to_country").select2({
+        closeOnSelect: true,
+        minimumInputLength: 1,
+        caches: true,
+        maximumSelectionLength: 10,
+    });
+</script>
+{% endblock %}
+{% block stylesheets %}
+<style>
+    .select2-container{
+        border: 1px solid #e2e8f0;
+        border-radius: .5rem;
+        line-height: 1.5;
+        padding: .5rem 1rem .5rem 1rem;
+        background-color: white;
+        border-width: 1px;
+    } 
+    .select2-container--default .select2-selection--single{
+        border: none;
+    }
+
+    body {
+    --iuw-background: white !important;
+    --iuw-border-color: rgb(209 213 219 ) !important;
+    --iuw-color: #{$dashgray} !important;
+    --iuw-placeholder-text-color: #{$dashgray} !important;
+    --iuw-dropzone-background: white !important;
+    --iuw-image-preview-border: rgb(209 213 219) !important;
+    --iuw-image-preview-shadow: rgba(171, 170, 170, 0.3);
+    --iuw-add-image-background: #{$dashlight} !important;
+    --iuw-add-image-color: #{$dashgray} !important;
+}
+
+    .select2-selection__arrow {
+        display: none;
+    }
+</style>
+{% endblock %}

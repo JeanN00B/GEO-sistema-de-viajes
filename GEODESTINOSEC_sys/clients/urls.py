@@ -6,4 +6,9 @@ urlpatterns = [
     path('new-client/', views.clients_create, name='new_client'), #TODO create form -> clients
     path('search/', views.search_name, name='search_name'),    # - search engine of clients
     path('<pk>/', views.clients_read_update, name='clients_read_update'),#TODO update form -> clients
+
+    path('visa/<pk>/', views.visa_create, name='visa_create'), #TODO create form -> visa
+    path('visa-delete/<pk>/', views.visa_delete, name='visa_delete'), #TODO delete form -> visa
+    path('passport/<pk>/', views.passport_create, name='passport_create'), #TODO create form -> passport
+    path('passport-delete/<pk>/', views.passport_delete, name='passport_delete'), #TODO delete form -> passport
     ]

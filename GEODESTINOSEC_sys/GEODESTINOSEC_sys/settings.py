@@ -29,7 +29,11 @@ CITIES_LIGHT_INCLUDE_CITY_TYPES = ['PPL', 'PPLA', 'PPLA2', 'PPLA3', 'PPLA4', 'PP
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
 CRISPY_FAIL_SILENTLY = not DEBUG
+SELECT2_CACHE_BACKEND = "select2"
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 
 # Application definition
 # TO-DO AND REMOVE: user:admin, pass:admin
@@ -53,11 +57,15 @@ INSTALLED_APPS = [
     'crispy_tailwind',
     'crispy_bootstrap5', # Not used by now, check before production!
     'image_uploader_widget', # Not used by now, check before production!
+    'django_filters',
+    'rest_framework',
+    'debug_toolbar',
 ]
 
 
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -94,13 +102,40 @@ WSGI_APPLICATION = 'GEODESTINOSEC_sys.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'geo_db',
+        'USER': 'postgres',
+        'PASSWORD': '12341234',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
+CACHES = {
+    'default': {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://0.0.0.0:6379/",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    # … default cache config and others
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://0.0.0.0:6379/",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

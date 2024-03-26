@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib import messages
 from django.core.validators import RegexValidator
 from static.metadata_dictionaries import *
 from phonenumber_field.modelfields import PhoneNumberField
@@ -8,7 +7,7 @@ import cities_light
 class Client(models.Model):
     # nro, primary key, 10 o passport -> validar con algoritmo?
     id_number = models.CharField(max_length=20, primary_key=True, null=False, validators=[
-        RegexValidator(regex='(^\d{10}|^w*)$', message='Error ID/RUC/Pasaporte no válido!', code='nomatch')])
+        RegexValidator(regex='(^\d{10}|^[a-zA-Z0-9]*)$', message='Error ID/RUC/Pasaporte no válido!', code='nomatch')])
     
     id_type = models.CharField(max_length=3, null=True, choices=ID_TYPE_CHOICES, default='None')
     
@@ -59,3 +58,25 @@ class Client(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+    
+class Visa(models.Model):
+    visa_holder = models.ForeignKey('Client', on_delete=models.CASCADE, null=False, blank=False)
+    visa_number = models.CharField(primary_key=True, max_length=20, null=False)
+    visa_type = models.CharField(max_length=3, null=False, choices=VISA_TYPE_CHOICES, default='T')
+    visa_issue_date = models.DateField(null=False)
+    visa_expire_date = models.DateField(null=False)
+    visa_to_country = models.ForeignKey('cities_light.Country', on_delete=models.CASCADE, null=False, blank=False)
+    
+    def __str__(self):
+        return f'{self.visa_holder} --- {self.visa_type} {self.visa_number}'
+    
+class Passport(models.Model):
+    passport_holder = models.ForeignKey('Client', on_delete=models.CASCADE, null=False, blank=False)
+    passport_number = models.CharField(primary_key=True, max_length=20, null=False)
+    passport_type = models.CharField(max_length=3, null=False, choices=PASSPORT_TYPE_CHOICES)
+    passport_issue_date = models.DateField(null=False)
+    passport_expire_date = models.DateField(null=False)
+    passport_issue_country = models.ForeignKey('cities_light.Country', on_delete=models.CASCADE, null=False, blank=False)
+
+    def __str__(self):
+        return f'{self.passport_holder} --- {self.passport_number}'

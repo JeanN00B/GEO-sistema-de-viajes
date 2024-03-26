@@ -4,26 +4,27 @@
 {% block title %} Nuevo Cliente {% endblock %}
 
 {% block content %}
+<div class = 'py-1 px-1'>
+    {% load tailwind_filters %}
+    {% load crispy_forms_tags %}
+    <form method="post" action=".">
+        {% csrf_token %}
+        {% crispy form %}
+        <!--{{ form|crispy }}-->
+    </form>
 
-    <div class = 'py-1 px-1'>
-        {% load tailwind_filters %}
-        {% load crispy_forms_tags %}
-        <form method="post" action=".">
-            {% csrf_token %}
-            {% crispy form %}
-            <!--{{ form|crispy }}-->
-        </form>
-
-    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
-    <script>
-        $("#id_res_city").select2({
-            minimumInputLength: 3,
-            caches: true,
-        });
-    </script>
+<script>
+    $("#id_res_city").select2({
+        closeOnSelect: true,
+        minimumInputLength: 3,
+        caches: true,
+        maximumSelectionLength: 10,
+    });
+</script>
 {% endblock %}
 
 {% block stylesheets %}
