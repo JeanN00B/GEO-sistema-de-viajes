@@ -465,86 +465,43 @@ class ReadUpdateClientForm(forms.ModelForm):
                         ),
                         Row(
                             Div(
+                                #TODO Loading passport bounding to this secction
+                                Div(),
                                 HTML(
                                     """
-                                    <h2 class="text-center text-xl font-bold text-white"> Pasaportes registrados </h2>
-                                    {% if not passports %}
-                                    <div class="inline-block my-3 w-2/3 text-center px-1 py-1 form-group border-2 rounded-lg border-gray-500 bg-gray-50">
-                                        <h2 class="text-l font-bold"> No se ha encontrado ningún pasaporte registrado para este cliente </h2>
-                                    </div>    
-                                    {% else %}
-                                    <div class="grid grid-cols-2 gap-1 mx-1 px-1 py-1 form-group">
-                                        {% for passport in passports %}
-                                        <div class="text-center px-1 py-1 form-group border-2 rounded-lg border-gray-500 bg-gray-50">
-                                            <h2 class="mb-2 text-l font-bold text-white bg-teal-500 rounded-lg text-center">Pasaporte ({{ passport.passport_issue_country }})</h2>
-                                            <div class="flex flex-row border-b border-gray-400 my-3">
-                                                <label class="w-1/4 text-xs font-bold">Número y tipo: </label>
-                                                <p class="w-3/4 text-m font-bold">{{ passport.passport_number }} - {{ passport.passport_type }}</p> 
-                                            </div>
-                                            <div class="flex flex-row border-b border-gray-400 my-3">
-                                                <label class="w-1/4 text-xs font-bold">Fecha de expedición: </label>
-                                                <p class="w-3/4 text-m font-bold">{{ passport.passport_issue_date }}</p>
-                                            </div>
-                                            <div class="flex flex-row border-b border-gray-400 my-3">
-                                                <label class="w-1/4 text-xs font-bold">Fecha de expiración: </label>
-                                                <p class="w-3/4 text-m font-bold">{{ passport.passport_expire_date }}</p>
-                                            </div>
-                                            <form action="{% url 'passport_delete' passport.pk %}" method="POST">
-                                                {% csrf_token %}
-                                                <button id='editable' class="pointer-events-none opacity-50 px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded-xl"> Eliminar </button>
-                                            </form>
-                                        </div>
-                                        {% endfor %}
+                                    <div 
+                                        hx-get="{% url 'passport_loading' client.pk %}"
+                                        hx-trigger="load">
                                     </div>
-                                    {% endif %}
                                     """
                                 ),
                                 css_class="my-2 text-center form-group border-2 border-gray-600 bg-gray-500"
                             ),
                             Div(
-                                # For items in Passport, display --> first item to show
-                                # For items in visa, display --> card template
+                                #TODO Loading visa bounding to this secction
                                 HTML(
                                     """
-                                    <h2 class="text-center text-xl font-bold text-white"> Visas registradas </h2>
-                                    {% if not visas %}
-                                    <div class="inline-block my-3 w-2/3 text-center px-1 py-1 form-group border-2 rounded-lg border-gray-500 bg-gray-50">                                    
-                                        <h2 class="text-l font-bold"> No se ha encontrado ninguna visa registrada para este cliente </h2>
+                                    <div 
+                                        hx-get="{% url 'visa_loading' client.pk %}"
+                                        hx-trigger="load">
                                     </div>
-                                    {% else %}
-                                    <div class="grid grid-cols-2 gap-1 mx-1 px-1 py-1 form-group">
-                                        {% for visa in visas %}
-                                        <div class="text-center px-1 py-1 form-group border-2 rounded-lg border-gray-500 bg-gray-50">
-                                            <h2 class="mb-2 text-l font-bold text-white bg-teal-500 rounded-lg text-center">Visa ({{ visa.visa_to_country }})</h2>
-                                            <div class="flex flex-row border-b border-gray-400 my-3">
-                                                <label class="w-1/4 text-xs font-bold">Número y tipo: </label>
-                                                <p class="w-3/4 text-m font-bold">{{ visa.visa_number }} - {{ visa.visa_type }}</p> 
-                                            </div>
-                                            <div class="flex flex-row border-b border-gray-400 my-3">
-                                                <label class="w-1/4 text-xs font-bold">Fecha de expedición: </label>
-                                                <p class="w-3/4 text-m font-bold">{{ visa.visa_issue_date }}</p>
-                                            </div>
-                                            <div class="flex flex-row border-b border-gray-400 my-3">
-                                                <label class="w-1/4 text-xs font-bold">Fecha de expiración: </label>
-                                                <p class="w-3/4 text-m font-bold">{{ visa.visa_expire_date }}</p>
-                                            </div>
-                                            <form action="{% url 'visa_delete' visa.pk %}" method="POST">
-                                                {% csrf_token %}
-                                                <button id='editable' class="pointer-events-none opacity-50 px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded-xl"> Eliminar </button>
-                                            </form>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                    {% endif %}
                                     """
                                 ),
                                 css_class="my-2 text-center form-group border-2 border-gray-600 bg-gray-500"
                             ),                            
                             Div(
-                                HTML('''<a id="editable" href="{% url "visa_create" client.id_number %}" style="width: 45%;" 
-                                     class="pointer-events-none opacity-50 text-l bg-green-400 hover:bg-green-600 text-white font-bold py-3 px-4 rounded items-center justify-center text-center">Nueva Visa</a>'''),
-                                HTML('''<a id="editable" href="{% url "passport_create" client.id_number %}" style="width: 45%;" 
-                                     class="pointer-events-none opacity-50 text-l bg-yellow-400 hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded items-center justify-center text-center">Nuevo Pasaporte</a>'''),
+                                HTML('''<a id="editable" 
+                                            href="{% url "visa_create" client.id_number %}"
+                                            style="width: 45%;"
+                                            class="pointer-events-none opacity-50 text-l bg-green-400 hover:bg-green-600 text-white font-bold py-3 px-4 rounded items-center justify-center text-center">
+                                            Nueva Visa
+                                        </a>'''),
+                                HTML('''<a id="editable" 
+                                            href="{% url "passport_create" client.id_number %}" 
+                                            style="width: 45%;" 
+                                            class="pointer-events-none opacity-50 text-l bg-yellow-400 hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded items-center justify-center text-center">
+                                            Nuevo Pasaporte
+                                        </a>'''),
                                 css_class="flex justify-around align-center my-5",
                             ),
                             css_id='div3',

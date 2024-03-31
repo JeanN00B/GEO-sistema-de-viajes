@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'sysuserprofile',
     'dashboard',
     'clients',
+    'analytics',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,6 +55,8 @@ INSTALLED_APPS = [
     'cities_light',
     'django_select2', # Not used -> Replace .selec2() from <script>?
     'crispy_forms',
+    'crispy_formset_modal',
+    'extra_views',
     'crispy_tailwind',
     'crispy_bootstrap5', # Not used by now, check before production!
     'image_uploader_widget', # Not used by now, check before production!
@@ -61,7 +64,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'debug_toolbar',
 ]
-
 
 
 MIDDLEWARE = [

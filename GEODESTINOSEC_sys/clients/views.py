@@ -74,10 +74,22 @@ def clients_read_update(request, pk):
          # Set Cities in cache for 2 hours every time the model is accessed
         form = ReadUpdateClientForm(instance=client)
     
-    visas = Visa.objects.filter(visa_holder=client)
-    passports = Passport.objects.filter(passport_holder=client)
     return render(request, 'clients/read_update_client.html',
-                        {'form': form, 'client': client, 'visas': visas, 'passports': passports})
+                        {'form': form, 'client': client})
+
+@login_required
+def visa_loading(request, pk):
+    client = get_object_or_404(Client, pk=pk)
+    visas = Visa.objects.filter(visa_holder=client)
+    return render(request, 'clients/loading_visa.html',
+                    {'visas': visas})
+
+@login_required
+def passport_loading(request, pk):
+    client = get_object_or_404(Client, pk=pk)
+    passports = Passport.objects.filter(passport_holder=client)
+    return render(request, 'clients/loading_passport.html',
+                    {'passports': passports})
 
 @login_required
 def visa_create(request, pk):

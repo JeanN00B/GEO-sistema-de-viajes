@@ -10,6 +10,7 @@ urlpatterns = [
     path('', views.LoginView.as_view(template_name='sysuserprofile/login.html'), name='index'),
     path('dashboard/', include('dashboard.urls')),
     path('dashboard/clients/', include('clients.urls')),
+    path('dashboard/analytics/', include('analytics.urls')),
     path('admin/', admin.site.urls),
     path('login/', views.LoginView.as_view(template_name='sysuserprofile/login.html'), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
