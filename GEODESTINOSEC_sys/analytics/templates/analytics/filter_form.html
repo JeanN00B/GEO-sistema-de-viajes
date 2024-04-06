@@ -1,0 +1,56 @@
+{% extends "core/base.html" %}
+
+{% block title %} Filtro de analíticas {% endblock %}
+
+{% block content %}
+    {% load tailwind_filters %}
+    {% load crispy_forms_tags %}
+    <form id="filter-form" method="GET">
+
+        {% crispy filter.form filter.helper %}
+    </form>
+
+    <form id="save-filter-form" method="POST">
+        {% csrf_token %}
+        <div class="flex flex-row w-full px-2 py-2 border-2 bg-gray-100">
+            <div>
+                <label for="name">Nombre</label>
+                <input type="text" name="name" id="name">
+            </div>
+            <div>
+                <label for="description">Descripción</label>
+                <textarea type="text" name="description" id="description"></textarea>
+            </div>
+            <div class="hidden">
+                <label for="json_content">Formulario de filtrado</label>
+                <textarea type="text" name="json_content" id="json_content"></textarea>
+            </div>
+            <button 
+                hx-post="{% url 'analytics-filter-save' %}"
+                hx-target="body"
+                hx-swap="outerHTML"
+                hx-trigger="click"
+                type="submit" 
+                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded items-center justify-center">
+                Save (POST)
+            </button>
+        </div>
+    </form>
+<br>
+{% for client in filter.qs %}
+    <p>{{ client.first_name }}</p>
+{% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.addEventListener('load', function() {
+        var formData = new FormData(document.getElementById('filter-form'));
+        var jsonObject = {};
+        formData.forEach(function(value, key) {
+            jsonObject[key] = value;
+        });
+        document.getElementById('json_content').value = JSON.stringify(jsonObject);
+    });
+</script>
+{% endblock %}

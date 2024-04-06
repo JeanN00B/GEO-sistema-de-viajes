@@ -1,16 +1,106 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %} New Client {% endblock %}
+{% block title %} Nuevo Cliente {% endblock %}
 
 {% block content %}
-    <div class = 'py-6 px-6'>
-        <form method="post" action=".">
-            {% csrf_token %}
+<div class = 'py-1 px-1'>
+    {% load tailwind_filters %}
+    {% load crispy_forms_tags %}
+    <form method="post" action="." enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.media }}
+        {% crispy form %}
+        <!--{{ form|crispy }}-->
+    </form>
 
-            {{ form.as_p }}
-
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Guardar</button>
-        </form>
-    </div>
+</div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+    $("#id_res_country").select2({
+        closeOnSelect: true,
+        caches: true,
+    });
+    
+    $("#id_res_region").select2({
+        closeOnSelect: true,
+        caches: true,
+        placeholder: 'Selecciona primero un país',
+    });
+    $("#id_res_city").select2({
+        closeOnSelect: true,
+        caches: true,
+        placeholder: 'Selecciona primero una región',
+    });
+</script>
+<script>
+    $(document).ready(function() {
+    $("#id_res_country").change(function() {
+        var countryId = $(this).val();
+        $.ajax({
+            url: "{% url 'get_regions' %}",
+            data: {'country': countryId},
+            dataType: 'json',
+            success: function(data) {
+                $("#id_res_region").empty();
+                $.each(data, function(index, region) {
+                    $("#id_res_region").append('<option value="' + region.id + '">' + region.name + '</option>');
+                });
+                $("#id_res_city").empty();
+            }
+        });
+    });
+
+    $("#id_res_region").change(function() {
+        var regionId = $(this).val();
+        $.ajax({
+            url: "{% url 'get_cities' %}",
+            data: {'region': regionId},
+            dataType: 'json',
+            success: function(data) {
+                $("#id_res_city").empty();
+                $.each(data, function(index, city) {
+                    $("#id_res_city").append('<option value="' + city.id + '">' + city.name + '</option>');
+                });
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .select2-container{
+        border: 1px solid #e2e8f0;
+        border-radius: .5rem;
+        line-height: 1.5;
+        padding: .5rem 1rem .5rem 1rem;
+        background-color: white;
+        border-width: 1px;
+    } 
+    .select2-container--default .select2-selection--single{
+        border: none;
+    }
+
+    .select2-selection__arrow {
+        display: none;
+    }
+
+    body {
+    --iuw-background: white !important;
+    --iuw-border-color: rgb(209 213 219 ) !important;
+    --iuw-color: #{$dashgray} !important;
+    --iuw-placeholder-text-color: #{$dashgray} !important;
+    --iuw-dropzone-background: white !important;
+    --iuw-image-preview-border: rgb(209 213 219) !important;
+    --iuw-image-preview-shadow: rgba(171, 170, 170, 0.3);
+    --iuw-add-image-background: #{$dashlight} !important;
+    --iuw-add-image-color: #{$dashgray} !important;
+    }
+</style>
+{% endblock %}
+

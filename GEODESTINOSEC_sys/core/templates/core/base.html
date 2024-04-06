@@ -1,45 +1,68 @@
+{% load static %}
 <!DOCTYPE html>
 
 <html>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
+        <script type="text/javascript" src="{% static 'core/js/htmx.min.js'%}" defer></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <script src="http://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <title>GEODESTINOSEC - {% block title %}{% endblock %}</title>
     </head>
-    <body>
-        <nav class="py-4 px-6 bg-teal-500">
+    <body class="flex flex-col justify-between">
+        <nav class="py-2 px-4 bg-orange-500">
             <div class="flex justify-between items-center">
                 {% if request.user.is_authenticated %}
-                    <a href="{% url 'dashboard' %}" class="text-white">GEODESTINOSEC</a>
+                    <a href="{% url 'dashboard' %}">
+                        <img src="{% static 'icons/geo-icon.svg' %}" alt="GEODESTINOSEC" class="h-12">
+                    </a>
                 {%else%}
-                    <a href="{% url 'index' %}" class="text-white">GEODESTINOSEC</a>
+                    <a href="{% url 'index' %}">
+                        <img src="{% static 'icons/geo-icon.svg' %}" alt="GEODESTINOSEC" class="h-12">
+                    </a>
                 {% endif %}
                 <div>
-                    {% if not request.user.is_authenticated %}
-                        <a href="{% url 'login' %}" class="py-4 px-6 bg-teal-600 rounded-xl text-white">Login</a>
-                    {% else %}
+                    {% if request.user.is_authenticated %}
                         <form method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
-                            <button type="submit" class="py-4 px-6 bg-red-600 rounded-xl text-white">Logout</button>
+                            <button type="submit" class="py-1 px-4 bg-red-500 rounded-xl text-white hover:bg-red-600">Cerrar sesión</button>
                         </form>
                     {% endif %}
                 </div>
             </div>
         </nav>
     
-        <div class="container py-10 px-15 bg-gray-50">
-            {% block content %}
-            {% endblock %}
+        <div class="bg-gray-50">
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="min-h-[76vh]">
+                {% block content %}
+
+                {% endblock %}    
+            </div>
         </div>
+        {% block scripts %}
+
+        {% endblock %}
     </body>
 
-    <footer class="py-8 text-center bg-gray-200">
+    <footer class="py-4 text-center bg-gray-200">
         <span class="text-xs"> &copy; 2024 GEODESTINOSEC - </span>
         <span class="text-xs">Desarrollado con </span>
         <span class="text-xs text-red-500">❤</span>
         <span class="text-xs"> por <a href="https://www.linkedin.com/in/jean-camacho-126126212/" class="text-blue-800">Jean Camacho</a></span>
     </footer>
+
+    {% block stylesheets %}
+
+    {% endblock %}
 
 </html>

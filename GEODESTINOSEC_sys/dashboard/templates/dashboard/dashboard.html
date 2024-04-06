@@ -6,59 +6,59 @@
 {% block content %}
     <h3>Bienvenido, {{ user.username }}</h3>
 
-    <div class="mt-8 mx-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div class="my-8 mx-20 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         <!-- Registro de Clientes -->
         <a href="{% url 'clients' %}" class="border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
-            <img src="{% static 'icons/registro_clientes.svg' %}" alt="Registro de Clientes" class="h-32 w-32 mb-4">
-            <p class="text-lg font-medium">Administrador de Clientes</p>
+            <img src="{% static 'icons/reshot-icon-check-mark.svg' %}" alt="Registro de Clientes" class="h-32 w-32 mb-2">
+            <p class="text-m font-medium">Administrador de Clientes</p>
         </a>
 
         <!-- Analíticas -->
-        <a href="." class="border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
-            <img src="{% static 'icons/analiticas.svg' %}" alt="Analíticas" class="h-32 w-32 mb-4">
-            <p class="text-lg font-medium">Analíticas</p>
+        <a href="{% url 'analytics' %}" class="border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
+            <img src="{% static 'icons/reshot-icon-stacked-graph.svg' %}" alt="Analíticas" class="h-32 w-32 mb-2">
+            <p class="text-m font-medium">Analíticas</p>
         </a>
 
         <!-- Facturación -->
-        <a href="." class="border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
-            <img src="{% static 'icons/facturacion.svg' %}" alt="Facturación" class="h-32 w-32 mb-4">
-            <p class="text-lg font-medium">Facturación</p>
+        <a href="." class="border border-gray-300 rounded-lg p-3 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
+            <img src="{% static 'icons/reshot-icon-invoice.svg' %}" alt="Facturación" class="h-32 w-32 mb-2">
+            <p class="text-m font-medium">Ventas</p>
         </a>
 
         <!-- Ticket Aéreos -->
-        <a href="." class="border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
-            <img src="{% static 'icons/tickets_aereos.svg' %}" alt="Tickets Aéreos" class="h-32 w-32 mb-4">
-            <p class="text-lg font-medium">Tickets Aéreos</p>
+        <a href="." class="border border-gray-300 rounded-lg p-3 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
+            <img src="{% static 'icons/reshot-icon-plane.svg' %}" alt="Tickets Aéreos" class="h-32 w-32 mb-2">
+            <p class="text-m font-medium">Tickets Aéreos</p>
         </a>
 
         <!-- Venta de Paquetes -->
-        <a href="." class="border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
-            <img src="{% static 'icons/venta_paquetes.svg' %}" alt="Venta de Paquetes" class="h-32 w-32 mb-4">
-            <p class="text-lg font-medium">Venta de Paquetes</p>
+        <a href="." class="border border-gray-300 rounded-lg p-3 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
+            <img src="{% static 'icons/reshot-icon-box-package.svg' %}" alt="Venta de Paquetes" class="h-32 w-32 mb-2">
+            <p class="text-m font-medium">Tours</p>
         </a>
 
         <!-- Gestión de Visas -->
-        <a href="." class="border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
-            <img src="{% static 'icons/gestion_visas.svg' %}" alt="Gestión de Visas" class="h-32 w-32 mb-4">
-            <p class="text-lg font-medium">Gestión de Visas</p>
+        <a href="." class="border border-gray-300 rounded-lg p-3 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
+            <img src="{% static 'icons/reshot-icon-visa-travel-document.svg' %}" alt="Gestión de Visas" class="h-32 w-32 mb-2">
+            <p class="text-m font-medium">Gestión de Visas</p>
         </a>
 
         <!-- Venta de Seguros de Asistencia -->
-        <a href="." class="border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
-            <img src="{% static 'icons/venta_seguros.svg' %}" alt="Venta de Seguros de Asistencia" class="h-32 w-32 mb-4">
-            <p class="text-lg font-medium">Venta de Seguros de Asistencia</p>
+        <a href="." class="border border-gray-300 rounded-lg p-3 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
+            <img src="{% static 'icons/reshot-icon-search-insurance.svg' %}" alt="Venta de Seguros de Asistencia" class="h-32 w-32 mb-2">
+            <p class="text-m font-medium">Seguros de Asistencia</p>
         </a>
 
         <!-- Hotelería -->
-        <a href="." class="border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
-            <img src="{% static 'icons/hoteleria.svg' %}" alt="Hotelería" class="h-32 w-32 mb-4">
-            <p class="text-lg font-medium">Hotelería</p>
+        <a href="." class="border border-gray-300 rounded-lg p-3 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
+            <img src="{% static 'icons/reshot-icon-hotel.svg' %}" alt="Hotelería" class="h-32 w-32 mb-2">
+            <p class="text-m font-medium">Hotelería</p>
         </a>
 
         <!-- Formularios de Autorizaciones de Viaje -->
-        <a href="." class="border border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
-            <img src="{% static 'icons/formularios_autorizaciones.svg' %}" alt="Formularios de Autorizaciones de Viaje" class="h-32 w-32 mb-4">
-            <p class="text-lg font-medium">Formularios de Autorizaciones de Viaje</p>
+        <a href="." class="border border-gray-300 rounded-lg p-3 flex flex-col items-center justify-center hover:bg-gray-100 transition duration-300">
+            <img src="{% static 'icons/reshot-icon-fill-up-form.svg' %}" alt="Formularios de Autorizaciones de Viaje" class="h-32 w-32 mb-2">
+            <p class="text-m font-medium">Formularios de Autorizaciones de Viaje</p>
         </a>
     </div>
 {% endblock %}

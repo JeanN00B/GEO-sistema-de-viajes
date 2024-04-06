@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Box_Package"
+   data-name="Box Package"
+   viewBox="0 0 48 48"
+   version="1.1"
+   sodipodi:docname="reshot-icon-box-package.svg"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview13"
+     pagecolor="#ffffff"
+     bordercolor="#111111"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="16.208333"
+     inkscape:cx="24"
+     inkscape:cy="20.606684"
+     inkscape:window-width="1920"
+     inkscape:window-height="988"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Box_Package" />
+  <defs
+     id="defs1">
+    <style
+       id="style1">.cls-1{fill:#a87e6b;}.cls-2{fill:#f6ccaf;}.cls-3{fill:#be927c;}.cls-4{fill:#ffdec7;}.cls-5{fill:#a07765;}.cls-6{fill:#c6c3d8;}</style>
+  </defs>
+  <title
+     id="title1">Box Package </title>
+  <path
+     class="cls-1"
+     d="M 31.438488,19.671241 23.867794,23.999999 2.2372387,11.632119 C 5.2438859,10.065521 2.6914804,11.405374 10.889461,7.1178426 Z"
+     id="path1"
+     style="stroke-width:1" />
+  <path
+     class="cls-2"
+     d="M 37.927655,15.960877 31.438488,19.671241 10.889461,7.1178426 17.681455,3.5517705 Z"
+     id="path2"
+     style="stroke-width:1" />
+  <path
+     class="cls-1"
+     d="m 45.498349,11.632119 c -4.564047,2.617868 5.742913,-3.308408 -7.570694,4.328758 L 17.64901,3.5929967 23.867794,0.29489524 Z"
+     id="path3"
+     style="stroke-width:1" />
+  <path
+     class="cls-3"
+     d="M 31.438488,19.671241 26.03085,22.763211 12.728058,15.156965 A 4.131436,3.9371086 0 0 1 12.857842,8.3340176 Z"
+     id="path4"
+     style="stroke-width:1" />
+  <path
+     class="cls-4"
+     d="M 37.927655,15.960877 31.438488,19.671241 12.857842,8.3340176 C 18.83869,5.2420475 13.939369,7.7259301 19.649836,4.778252 Z"
+     id="path5"
+     style="stroke-width:1" />
+  <path
+     class="cls-3"
+     d="M 45.498349,11.632119 37.927655,15.960877 19.649836,4.778252 26.03085,1.4286176 C 46.255419,12.023768 42.924313,10.271652 45.498349,11.632119 Z"
+     id="path6"
+     style="stroke-width:1" />
+  <path
+     class="cls-1"
+     d="M 45.498349,11.632119 V 35.337224 L 23.867794,47.705104 V 23.999999 Z"
+     id="path7"
+     style="stroke-width:1" />
+  <path
+     class="cls-3"
+     d="M 45.498349,11.632119 V 33.27591 L 32.584908,40.665719 A 4.3261111,4.1226268 0 0 1 26.03085,37.130566 V 22.763211 Z"
+     id="path8"
+     style="stroke-width:1" />
+  <path
+     class="cls-2"
+     d="m 37.927655,15.960877 v 7.008466 l -6.489167,3.09197 v -6.390072 z"
+     id="path9"
+     style="stroke-width:1" />
+  <path
+     class="cls-4"
+     d="m 37.927655,15.960877 v 5.97781 l -1.460062,0.69054 a 3.4717041,3.3084081 0 0 1 -5.029105,-2.957986 z"
+     id="path10"
+     style="stroke-width:1" />
+  <polygon
+     class="cls-2"
+     points="37,33 37,39.2 31,42.8 31,37 "
+     id="polygon10"
+     transform="matrix(1.0815277,0,0,1.0306567,-2.0888724,-0.73576146)"
+     style="stroke-width:0.947162" />
+  <polygon
+     class="cls-1"
+     points="31,37.33 31,42.8 30,43.4 30,38 "
+     id="polygon11"
+     transform="matrix(1.0815277,0,0,1.0306567,-2.0888724,-0.73576146)"
+     style="stroke-width:0.947162" />
+  <path
+     class="cls-4"
+     d="m 37.927655,33.27591 v 4.328758 l -2.963386,1.690277 a 2.3252847,2.215912 0 0 1 -3.525781,-1.896408 z"
+     id="path11"
+     style="stroke-width:1" />
+  <polygon
+     class="cls-5"
+     points="24,24 24,47 4,35 4,12 "
+     id="polygon12"
+     transform="matrix(1.0815277,0,0,1.0306567,-2.0888724,-0.73576146)"
+     style="stroke-width:0.947162" />
+  <polygon
+     class="cls-6"
+     points="14,30 14,36 20,40 20,34 "
+     id="polygon13"
+     transform="matrix(1.0815277,0,0,1.0306567,-2.0888724,-0.73576146)"
+     style="stroke-width:0.947162" />
+  <path
+     class="cls-1"
+     d="m 12.857842,8.3340176 a 3.7853471,3.6072985 0 0 0 -0.789516,0.546248 C 13.052516,9.5089662 10.208099,7.7156235 30.35696,20.289635 v 5.771678 l 1.081528,-0.515328 v -5.874744 z"
+     id="path13"
+     style="stroke-width:1" />
+</svg>
