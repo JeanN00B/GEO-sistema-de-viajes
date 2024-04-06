@@ -3,13 +3,11 @@
 {% block title %} Filtro de analíticas {% endblock %}
 
 {% block content %}
+    {% load tailwind_filters %}
+    {% load crispy_forms_tags %}
     <form id="filter-form" method="GET">
-        {{ filter.form.as_p }}
-        <button 
-            type="submit"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center justify-center">
-            Filtrar (GET)
-        </button>
+
+        {% crispy filter.form filter.helper %}
     </form>
 
     <form id="save-filter-form" method="POST">

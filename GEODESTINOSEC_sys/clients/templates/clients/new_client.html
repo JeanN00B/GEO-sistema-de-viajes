@@ -7,8 +7,9 @@
 <div class = 'py-1 px-1'>
     {% load tailwind_filters %}
     {% load crispy_forms_tags %}
-    <form method="post" action=".">
+    <form method="post" action="." enctype="multipart/form-data">
         {% csrf_token %}
+        {{ form.media }}
         {% crispy form %}
         <!--{{ form|crispy }}-->
     </form>
@@ -18,13 +19,57 @@
 
 {% block scripts %}
 <script>
+    $("#id_res_country").select2({
+        closeOnSelect: true,
+        caches: true,
+    });
+    
+    $("#id_res_region").select2({
+        closeOnSelect: true,
+        caches: true,
+        placeholder: 'Selecciona primero un país',
+    });
     $("#id_res_city").select2({
         closeOnSelect: true,
-        minimumInputLength: 3,
         caches: true,
-        maximumSelectionLength: 10,
+        placeholder: 'Selecciona primero una región',
     });
 </script>
+<script>
+    $(document).ready(function() {
+    $("#id_res_country").change(function() {
+        var countryId = $(this).val();
+        $.ajax({
+            url: "{% url 'get_regions' %}",
+            data: {'country': countryId},
+            dataType: 'json',
+            success: function(data) {
+                $("#id_res_region").empty();
+                $.each(data, function(index, region) {
+                    $("#id_res_region").append('<option value="' + region.id + '">' + region.name + '</option>');
+                });
+                $("#id_res_city").empty();
+            }
+        });
+    });
+
+    $("#id_res_region").change(function() {
+        var regionId = $(this).val();
+        $.ajax({
+            url: "{% url 'get_cities' %}",
+            data: {'region': regionId},
+            dataType: 'json',
+            success: function(data) {
+                $("#id_res_city").empty();
+                $.each(data, function(index, city) {
+                    $("#id_res_city").append('<option value="' + city.id + '">' + city.name + '</option>');
+                });
+            }
+        });
+    });
+});
+</script>
+
 {% endblock %}
 
 {% block stylesheets %}
@@ -41,6 +86,10 @@
         border: none;
     }
 
+    .select2-selection__arrow {
+        display: none;
+    }
+
     body {
     --iuw-background: white !important;
     --iuw-border-color: rgb(209 213 219 ) !important;
@@ -51,10 +100,6 @@
     --iuw-image-preview-shadow: rgba(171, 170, 170, 0.3);
     --iuw-add-image-background: #{$dashlight} !important;
     --iuw-add-image-color: #{$dashgray} !important;
-}
-
-    .select2-selection__arrow {
-        display: none;
     }
 </style>
 {% endblock %}

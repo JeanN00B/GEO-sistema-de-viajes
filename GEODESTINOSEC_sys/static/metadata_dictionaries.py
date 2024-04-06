@@ -70,10 +70,8 @@ WORK_INDUSTRY_CHOICES = [
 ACADEMIC_LEVEL_CHOICES = [
     ('PR', 'Primaria'),
     ('HS', 'Secundaria'),
-    ('UN', 'Universitaria'),
-    ('BA', 'Licenciatura'),
-    ('MA', 'Maestría'),
-    ('PH', 'Doctorado'),
+    ('SU', 'Superior'),
+    ('PG', 'Posgrado'),
     ]
 
 VISA_TYPE_CHOICES = [

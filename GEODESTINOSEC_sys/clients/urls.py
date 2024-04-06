@@ -13,4 +13,7 @@ urlpatterns = [
     path('passport/<pk>/', views.passport_create, name='passport_create'), #TODO create form -> passport
     path('passport-delete/<pk>/', views.passport_delete, name='passport_delete'), #TODO delete form -> passport
     path('passport-loading/<pk>/', views.passport_loading, name='passport_loading'), #TODO HTML base for passport
+    
+    path('/get-regions/', views.get_regions, name='get_regions'), #TODO get regions from country
+    path('/get-cities/', views.get_cities, name='get_cities'), #TODO get cities from country
     ]

@@ -5,11 +5,12 @@ from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 import cities_light
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, HTML, ButtonHolder, Column, Row, Field, Div, Submit, Button
+from crispy_forms.layout import Layout, HTML, Column, Row, Field, Div, Submit, Button
 from static.metadata_dictionaries import *
-#from image_uploader_widget.widgets import ImageUploaderWidget
+from image_uploader_widget.widgets import ImageUploaderWidget
 from sysuserprofile.models import UserProfile
 from django.core.cache import cache
+from django.contrib import messages
 
 
 '''
@@ -22,22 +23,22 @@ class AddClientForm(forms.ModelForm):
         exclude = ['salesman_refer']
         labels = {
             'id_number': 'Número de Identificación',
-            #'id_type': 'Tipo de Identificación',
             'client_type': 'Tipo de Cliente',
             'first_name': 'Primer Nombre',
-            'image': 'Foto del cliente',
             'second_name': 'Segundo Nombre',
             'last_name': 'Primer Apellido',
             'sur_name': 'Segundo Apellido',
+            'image': 'Foto del cliente',
             'gender': 'Género',
             'civil_status': 'Estado Civil',
             'phone': 'Teléfono celular',
             'email': 'Correo electrónico',
-            'res_city': 'Ciudad / Provincia / País',
+            'res_city': 'Ciudad',
+            'res_region': 'Provincia',
+            'res_country': 'País',
             'academic_level': 'Nivel Académico',
             'address': 'Dirección',
             'person_type': 'Tipo de Persona',
-            'nationality': 'Nacionalidad',
             'date_of_birth': 'Fecha de Nacimiento',
             'budget_capacity': 'Nivel de gasto',
             'work_industry': 'Sector ocupacional',
@@ -109,25 +110,26 @@ class AddClientForm(forms.ModelForm):
             )
         )
 
-    """
-    res_city = forms.ModelChoiceField(
-        label='Ciudad / Provincia / País',
-        queryset=cities_light.models.City.objects.all(),
-        widget=s2forms.Select2Widget(),
-        required=False,
-        )
-    """
-    res_city = s2forms.ModelSelect2Widget(
-        queryset=cache.get_or_set('cached_cities', cities_light.models.City.objects.all(), 60*60*2)
+    res_country = s2forms.ModelSelect2Widget(
+        queryset=cities_light.models.Country.objects.all(),
     )
-        
+
+    res_region = s2forms.ModelSelect2Widget()
+    
+    res_city = s2forms.ModelSelect2Widget()
+
     image = forms.ImageField(
         label='Foto del cliente',
         required= False,
+        widget=ImageUploaderWidget(),
     )
 
     def __init__(self, *args, **kwargs):
         super(AddClientForm, self).__init__(*args, **kwargs)
+        self.fields['image'].required = False
+        if not self.is_bound:
+            self.fields['res_region'].queryset = cities_light.models.Region.objects.none()
+            self.fields['res_city'].queryset = cities_light.models.City.objects.none()
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Field(
@@ -150,7 +152,7 @@ class AddClientForm(forms.ModelForm):
                     ),
                     Column(
                         HTML('<h2 class="my-2 py-1 text-xl font-bold text-white bg-blue-400 rounded-lg text-center">Datos de ubicación</h2>'),
-                        'res_city', 'address', 
+                        'res_country', 'res_region', 'res_city', 'address', 
                         HTML('<h2 class="my-2 py-1 text-xl font-bold text-white bg-blue-400 rounded-lg text-center">Datos laborales</h2>'),
                         'academic_level', 'work_type', 'work_industry', 'work_position', 'company_name',
                         style="margin-bottom: 5px; border: 2px solid #a4a5a5;",
@@ -158,8 +160,12 @@ class AddClientForm(forms.ModelForm):
                         css_class="w-1/3 mx-1 px-2 py-2 form-group"
                     ),
                 ),
-                Submit('submit', 'Guardar', css_class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center justify-center'),
-                css_class="flex justify-center"
+                Div(
+                    Submit('submit', 'Guardar', 
+                       css_class='w-1/4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-1 rounded items-center justify-center'),
+                    css_class="text-center",
+                ),
+                css_class="flex justify-center",
             ),
         )
         
@@ -253,7 +259,7 @@ class AddClientForm(forms.ModelForm):
 
 
 '''
-CAN'T modify the ID number, it's a primary key
+CAN modify the ID number, it's a primary key
 Can add / modify almost anything else, including id type and
 salesman_refer
 ''' 
@@ -274,7 +280,9 @@ class ReadUpdateClientForm(forms.ModelForm):
             'civil_status': 'Estado Civil',
             'phone': 'Teléfono celular',
             'email': 'Correo electrónico',
-            'res_city': 'Ciudad / Provincia / País',
+            'res_city': 'Ciudad',
+            'res_region': 'Provincia',
+            'res_country': 'País',
             'academic_level': 'Nivel Académico',
             'address': 'Dirección',
             'person_type': 'Tipo de Persona',
@@ -288,11 +296,6 @@ class ReadUpdateClientForm(forms.ModelForm):
             'work_type': 'Tipo de Trabajo',
         }
      
-    id_number = forms.CharField(
-        label='Número de Identificación',
-        disabled=True,
-        widget=forms.HiddenInput(),
-    )
 
     date_of_birth = forms.DateField(
         label='Fecha de Nacimiento',
@@ -307,7 +310,6 @@ class ReadUpdateClientForm(forms.ModelForm):
 
     gender = forms.ChoiceField(
         label='Género',
-        widget=forms.RadioSelect(),
         choices=GENDER_CHOICES,
         required=False,
     )
@@ -315,27 +317,23 @@ class ReadUpdateClientForm(forms.ModelForm):
     id_type = forms.ChoiceField(
         label='Tipo de Identificación',
         choices=ID_TYPE_CHOICES,
-        widget=forms.RadioSelect(),
     )
 
     person_type = forms.ChoiceField(
         label='Tipo de Persona',
         choices=PERSON_TYPE_CHOICES,
-        widget=forms.RadioSelect(),
         required=False,
     )
 
     civil_status = forms.ChoiceField(
         label='Estado Civil',
         choices=CIVIL_STATUS_CHOICES,
-        widget=forms.RadioSelect(),
         required=False,
     )
 
     budget_capacity = forms.ChoiceField(
         label='Nivel de gasto',
         choices=BUDGET_CAPACITY_CHOICES,
-        widget=forms.RadioSelect(),
         required=False,
     )
 
@@ -354,7 +352,6 @@ class ReadUpdateClientForm(forms.ModelForm):
     client_type = forms.ChoiceField(
         label='Tipo de Cliente',
         choices=CLIENT_TYPE_CHOICES,
-        widget=forms.RadioSelect(),
         required=False,
     )
 
@@ -367,28 +364,35 @@ class ReadUpdateClientForm(forms.ModelForm):
                             'style': 'width: 45%;'},)
         )
 
-    res_city = s2forms.ModelSelect2Widget(
-        queryset=cache.get_or_set('cached_cities', cities_light.models.City.objects.all(), 60*60*2),
-        attrs={
-            'data-minimum-input-length': 2,
-            'data-placeholder': 'Buscar ciudad',
-            'data-close-on-select': 'true',
-        },
+    res_country = s2forms.ModelSelect2Widget(
+        queryset=cities_light.models.Country.objects.all(),
     )
+
+    res_region = s2forms.ModelSelect2Widget()
+
+    res_city = s2forms.ModelSelect2Widget()
     
     image = forms.ImageField(
         label='Foto del cliente',
         required= False,
+        widget=ImageUploaderWidget(
+            attrs={'class': 'pointer-events-none opacity-50',
+                   'id': 'editable',},
+        ),
     )
 
     salesman_refer = forms.ModelChoiceField(
         label='Vendedor referente',
         queryset=UserProfile.objects.all(),
-        widget=forms.Select()
+        widget=forms.Select(),
+        required=False,
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if not self.is_bound:
+            self.fields['res_region'].queryset = cities_light.models.Region.objects.filter(country=self.instance.res_country)
+            self.fields['res_city'].queryset = cities_light.models.City.objects.filter(region=self.instance.res_region)
         self.helper = FormHelper()
         self.helper.label_class='block text-xs font-bold mb-2'
         self.helper.layout = Layout(
@@ -404,28 +408,21 @@ class ReadUpdateClientForm(forms.ModelForm):
                         ),
                         Div(
                             HTML('<h2 class="mb-2 text-l font-bold text-white bg-blue-400 rounded-lg text-center">Número de identificación</h2>'),
-                            HTML('<p class="mb-2 text-xl font-bold text-center">{{ form.id_number.value }}</p>'),
+                            Field('id_number', id='editable', css_class='pointer-events-none opacity-50',),
+                            #HTML('<p class="mb-2 text-xl font-bold text-center">{{ form.id_number.value }}</p>'),
                             css_class="px-2 py-2 mb-2 form-group rounded-lg border-2 border-gray-500 bg-gray-50",
                         ),
                         Div(
                             HTML('<h2 class="mb-2 text-l font-bold text-white bg-blue-400 rounded-lg text-center">Nombre del cliente</h2>'),
                             Div(
                                 Field('first_name', id='editable', css_class='mr-2 pointer-events-none opacity-50'), 
-                                Field('second_name', id='editable', css_class='mr-2 pointer-events-none opacity-50', ),
+                                Field('second_name', id='editable', css_class='mr-2 pointer-events-none opacity-50',),
                                 Field('last_name', id='editable', css_class='mr-2 pointer-events-none opacity-50'),
                                 Field('sur_name', id='editable', css_class='mr-2 pointer-events-none opacity-50'),
                                 css_class="grid grid-cols-2 gap-2 ",
                                 style="font-size: 1em; font: bold;",
                             ),
                             css_class="px-2 py-2 mb-2 form-group rounded-lg border-2 border-gray-500 bg-gray-50",
-                        ),
-                        Div(
-                            Button('edit', 'Editar', css_id='edit-button', 
-                                   style='width: 45%;', css_class='text-l bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded items-center justify-center text-center'),
-                            Submit('submit', 'Guardar', css_id='submit-button', 
-                                   style='display: none; width: 45%;', css_class='text-l bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded items-center justify-center text-center'),
-                            HTML('<a href="{% url "clients" %}" style="width: 45%;" class="text-l bg-yellow-400 hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded items-center justify-center text-center">Regresar</a>'),
-                            css_class="flex justify-around align-center my-5",
                         ),
                         css_class="w-1/3 mx-1 px-2 py-2 form-group bg-gray-600",
                     ),
@@ -439,7 +436,6 @@ class ReadUpdateClientForm(forms.ModelForm):
                                 Field('date_of_birth', id='editable', css_class='pointer-events-none opacity-50'), 
                                 Field('client_type', id='editable', css_class='pointer-events-none opacity-50'), 
                                 Field('salesman_refer', id='editable', css_class='pointer-events-none opacity-50'), 
-                                Field('additional_info', id='editable', css_class='pointer-events-none opacity-50'),
                                 css_class='w-1/2 mx-1 px-2 py-2 form-group border-2 rounded-lg border-gray-500 bg-gray-50',
                             ),
                             Div(
@@ -447,6 +443,7 @@ class ReadUpdateClientForm(forms.ModelForm):
                                 Field('civil_status', id='editable', css_class='pointer-events-none opacity-50'), 
                                 Field('person_type', id='editable', css_class='pointer-events-none opacity-50'), 
                                 Field('budget_capacity', id='editable', css_class='pointer-events-none opacity-50'),
+                                Field('additional_info', id='editable', css_class='pointer-events-none opacity-50'),
                                 css_class='w-1/2 mx-1 px-2 py-2 form-group border-2 rounded-lg border-gray-500 bg-gray-50'
                             ),
                             css_id='div1',
@@ -455,7 +452,12 @@ class ReadUpdateClientForm(forms.ModelForm):
                         ),
                         Row(
                             Div(
-                                Field('res_city', id='editable',), 
+                                Field('res_country', css_class='pointer-events-none opacity-50',
+                                      style='width: 100%;'),
+                                Field('res_region', css_class='pointer-events-none opacity-50',
+                                      style='width: 100%;'),
+                                Field('res_city', css_class='pointer-events-none opacity-50',
+                                      style='width: 100%;'), 
                                 Field('address', id='editable', css_class='pointer-events-none opacity-50'),
                                 css_class="mx-1 px-2 py-2 form-group border-2 rounded-lg border-gray-500 bg-gray-50"
                             ),
@@ -464,31 +466,6 @@ class ReadUpdateClientForm(forms.ModelForm):
                             css_class='tab-content',
                         ),
                         Row(
-                            Div(
-                                #TODO Loading passport bounding to this secction
-                                Div(),
-                                HTML(
-                                    """
-                                    <div 
-                                        hx-get="{% url 'passport_loading' client.pk %}"
-                                        hx-trigger="load">
-                                    </div>
-                                    """
-                                ),
-                                css_class="my-2 text-center form-group border-2 border-gray-600 bg-gray-500"
-                            ),
-                            Div(
-                                #TODO Loading visa bounding to this secction
-                                HTML(
-                                    """
-                                    <div 
-                                        hx-get="{% url 'visa_loading' client.pk %}"
-                                        hx-trigger="load">
-                                    </div>
-                                    """
-                                ),
-                                css_class="my-2 text-center form-group border-2 border-gray-600 bg-gray-500"
-                            ),                            
                             Div(
                                 HTML('''<a id="editable" 
                                             href="{% url "visa_create" client.id_number %}"
@@ -504,6 +481,29 @@ class ReadUpdateClientForm(forms.ModelForm):
                                         </a>'''),
                                 css_class="flex justify-around align-center my-5",
                             ),
+                            Div(
+                                HTML(
+                                    """
+                                    <div 
+                                        hx-get="{% url 'passport_loading' client.pk %}"
+                                        hx-trigger="load">
+                                    </div>
+                                    """
+                                ),
+                                css_class="my-2 text-center form-group border-2 border-gray-600 bg-gray-500"
+                            ),
+                            Div(
+                                HTML(
+                                    """
+                                    <div 
+                                        hx-get="{% url 'visa_loading' client.pk %}"
+                                        hx-trigger="load">
+                                    </div>
+                                    """
+                                ),
+                                css_class="my-2 text-center form-group border-2 border-gray-600 bg-gray-500"
+                            ),                            
+                            
                             css_id='div3',
                             style='display: none;',
                             css_class='tab-content flex flex-col',
@@ -521,9 +521,17 @@ class ReadUpdateClientForm(forms.ModelForm):
                             style='display: none;',
                             css_class='tab-content',
                         ),
-                        css_class="justify-center items-center flex w-1/2 mx-1 px-2 py-2 form-group bg-gray-300",
+                        css_class="justify-center flex w-1/2 mx-1 px-2 py-2 form-group bg-gray-300",
                     ),
                     Column(
+                        Div(
+                            Button('edit', 'Editar', css_id='edit-button', 
+                                   style='width: 45%;', css_class='text-l bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded items-center justify-center text-center'),
+                            Submit('submit', 'Guardar', css_id='submit-button', 
+                                   style='display: none; width: 45%;', css_class='text-l bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded items-center justify-center text-center'),
+                            HTML('<a href="{% url "clients" %}" style="width: 45%;" class="text-l bg-yellow-400 hover:bg-yellow-600 text-white font-bold py-1 px-2 rounded items-center justify-center text-center">Regresar</a>'),
+                            css_class="flex justify-around align-center my-5",
+                        ),
                         Button('edit', 'Información general', 
                                css_class='show-div my-4 text-l bg-white text-black font-bold py-3 px-2 rounded items-center justify-center text-center', 
                                data_target='#div1'),
@@ -542,14 +550,6 @@ class ReadUpdateClientForm(forms.ModelForm):
 
             ),
         )
-
-    def clean_id_number(self):
-        # Validar si el id_number ha cambiado
-        old_id_number = self.instance.id_number
-        new_id_number = self.cleaned_data['id_number']
-        if old_id_number != new_id_number:
-            raise forms.ValidationError('No se permite cambiar el número de identificación.')
-        return new_id_number
 
 
 '''

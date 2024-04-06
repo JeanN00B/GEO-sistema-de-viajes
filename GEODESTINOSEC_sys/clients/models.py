@@ -6,7 +6,7 @@ import cities_light
 
 class Client(models.Model):
     # nro, primary key, 10 o passport -> validar con algoritmo?
-    id_number = models.CharField(max_length=20, primary_key=True, null=False, validators=[
+    id_number = models.CharField(max_length=20, primary_key=True, null=False, blank=False, validators=[
         RegexValidator(regex='(^\d{10}|^[a-zA-Z0-9]*)$', message='Error ID/RUC/Pasaporte no válido!', code='nomatch')])
     
     id_type = models.CharField(max_length=3, null=True, choices=ID_TYPE_CHOICES, default='None')
@@ -19,8 +19,7 @@ class Client(models.Model):
     sur_name = models.CharField(max_length=20, blank=True, null=True)
     # Generate the fullname from the first_name, second_name, last_name, and sur_name
 
-    image = models.ImageField(upload_to='media/clients/', null=True, blank=True, 
-                              height_field=300, width_field=300, max_length=100)
+    image = models.ImageField(upload_to='clients_photos', null=True, blank=True)
     
     gender = models.CharField(max_length=2, null=True, choices=GENDER_CHOICES, blank=True, default=None)
     
@@ -35,7 +34,9 @@ class Client(models.Model):
     salesman_refer = models.ForeignKey('sysuserprofile.UserProfile', on_delete=models.SET_NULL, null=True, blank=True)  
     
     # TODO EXTRACT city.province & city.country from the city_light model
-    res_city = models.ForeignKey('cities_light.City', on_delete=models.SET_NULL, null=True, blank=True, default=None)
+    res_city = models.ForeignKey('cities_light.City', related_name='cities', on_delete=models.SET_NULL, null=True, blank=True, default=None)
+    res_region = models.ForeignKey('cities_light.Region', related_name='regions', on_delete=models.SET_NULL, null=True, blank=True, default=None)
+    res_country = models.ForeignKey('cities_light.Country', related_name='countries', on_delete=models.SET_NULL, null=True, blank=True, default=None)
     address = models.TextField(max_length=100, null=True, blank=True, default=None)
     
     person_type = models.CharField(max_length=4, null=True, blank=True, choices=PERSON_TYPE_CHOICES, default=None)

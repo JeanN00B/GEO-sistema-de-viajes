@@ -1,3 +1,8 @@
+# ------------------------
+# PostgreSQL setup
+# ------------------------
+
+
 sudo su — postgres
 psql
 ===================
@@ -10,3 +15,12 @@ create database geo_db;
 alter role geo_admin with password '12341234';
 grant all privileges on database geo_db to geo_admin;
 alter database geo_db owner to geo_admin;
+
+
+
+
+# ------------------------
+# redis docker setup
+# ------------------------
+
+docker run -d --name redis -p 6379:6379 redis

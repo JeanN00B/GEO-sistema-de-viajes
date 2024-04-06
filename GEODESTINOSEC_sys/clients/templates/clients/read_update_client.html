@@ -8,48 +8,92 @@
 <div>
 
     {% load crispy_forms_tags %}
-    <form method="POST" action="." id="view-edit-form">
+    <form method="POST" action="." id="view-edit-form" enctype="multipart/form-data">
         {% csrf_token %}
         {% crispy form %}
-
-    <!-- 
-        <div class="h-full flex-box space-x-4 items-stretch">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded items-center justify-center">Guardar cambios</button>
-            <a href="{% url 'clients' %}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded items-center justify-center">Regresar</a>
-        </div>
-    -->
     </form>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    // TODO fix the select2 for view/update template
-    $("#id_res_city").select2();
+    $("#id_res_country").select2({
+        closeOnSelect: true,
+        caches: true,
+    });
+    $("#id_res_region").select2({
+        closeOnSelect: true,
+        caches: true,
+        placeholder: 'Selecciona primero un país',
+    });
+    $("#id_res_city").select2({
+        closeOnSelect: true,
+        caches: true,
+        placeholder: 'Selecciona primero una región',
+    });
 </script>
-
 <script>
-    //BY DEFAULT, DISABLE THE FORM FIELDS -> type=radio
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('input[type="radio"]').forEach(function(element) {
-            element.disabled = true;
+    $(document).ready(function() {
+    $("#id_res_country").change(function() {
+        var countryId = $(this).val();
+        $.ajax({
+            url: "{% url 'get_regions' %}",
+            data: {'country': countryId},
+            dataType: 'json',
+            success: function(data) {
+                $("#id_res_region").empty();
+                $.each(data, function(index, region) {
+                    $("#id_res_region").append('<option value="' + region.id + '">' + region.name + '</option>');
+                });
+                $("#id_res_city").empty();
+            }
         });
-        document.querySelectorAll('#view-edit-form select').forEach(function(element) {
+    });
+
+    $("#id_res_region").change(function() {
+        var regionId = $(this).val();
+        $.ajax({
+            url: "{% url 'get_cities' %}",
+            data: {'region': regionId},
+            dataType: 'json',
+            success: function(data) {
+                $("#id_res_city").empty();
+                $.each(data, function(index, city) {
+                    $("#id_res_city").append('<option value="' + city.id + '">' + city.name + '</option>');
+                });
+            }
+        });
+    });
+});
+</script>
+<script>
+    //BY DEFAULT, DISABLE THE FORM FIELDS 
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('#view-edit-form select, #editable, #id_res_country, #id_res_region, #id_res_city').forEach(function(element) {
             element.classList.add('pointer-events-none');
             element.classList.add('opacity-50');
+            element.disabled = true;
+        });
+        var deleteIcon = document.querySelectorAll('.iuw-delete-icon');
+        deleteIcon.forEach(function(icon) {
+            icon.style.display = 'none';
         });
     });
 
     // Enable the form fields for editing
     document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('edit-button').addEventListener('click', function() {
-            document.querySelectorAll('#view-edit-form select, #id_date_of_birth_day, #id_date_of_birth_month, #id_date_of_birth_year, #editable, #id_phone_0, #id_phone_1, input[type="radio"]').forEach(function(element) {
+            document.querySelectorAll('#view-edit-form select, #id_res_country, #id_res_region, #id_res_city, #id_date_of_birth_day, #id_date_of_birth_month, #id_date_of_birth_year, #editable, #id_phone_0, #id_phone_1').forEach(function(element) {
                 element.classList.remove('pointer-events-none');
                 element.classList.remove('opacity-50');
                 element.disabled = false;
             });
             document.getElementById('edit-button').style.display = 'none';                                   
             document.getElementById('submit-button').style.display = 'block';
+            var deleteIcon = document.querySelectorAll('.iuw-delete-icon');
+            deleteIcon.forEach(function(icon) {
+                icon.style.display = 'flex';
+            });
         });
     });
 
@@ -82,4 +126,40 @@
     });
 
 </script>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+    body {
+        --iuw-background: white !important;
+        --iuw-border-color: rgb(209 213 219 ) !important;
+        --iuw-color: #{$dashgray} !important;
+        --iuw-placeholder-text-color: #{$dashgray} !important;
+        --iuw-dropzone-background: white !important;
+        --iuw-image-preview-border: rgb(209 213 219) !important;
+        --iuw-image-preview-shadow: rgba(171, 170, 170, 0.3);
+        --iuw-add-image-background: #{$dashlight} !important;
+        --iuw-add-image-color: #{$dashgray} !important;
+        }
+
+    .select2-container{
+        border: 1px solid #e2e8f0;
+        border-radius: .5rem;
+        line-height: 1.5;
+        padding: .5rem 1rem .5rem 1rem;
+        background-color: white;
+        border-width: 1px;
+    } 
+
+    .select2-container--default .select2-selection--single{
+        border: none;
+        width: 100%;
+    }
+
+    .select2-selection__arrow {
+        display: none;
+    }
+
+    
+</style>
 {% endblock %}

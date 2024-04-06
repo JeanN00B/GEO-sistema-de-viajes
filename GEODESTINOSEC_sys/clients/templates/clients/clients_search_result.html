@@ -7,7 +7,7 @@
         <td class="py-2 px-4">{{ client.id_number }}</td>
         <td class="py-2 px-4">{{ client.id_type }}</td>
         <td class="py-2 px-4">{{ client.date_of_birth }}</td>
-        <td class="py-2 px-4"><a href="{% url 'clients_read_update' client.id_number %}" target="_self" class="px-4 py-1 bg-green-400 hover:bg-green-600 text-white rounded-xl">Ver / Modificar</a></td>
+        <td class="py-2 px-4"><a href="{% url 'clients_read_update' client.pk %}" target="_self" class="px-4 py-1 bg-green-400 hover:bg-green-600 text-white rounded-xl">Ver / Modificar</a></td>
     </tr>
     {% endfor %}
 {% endif %}

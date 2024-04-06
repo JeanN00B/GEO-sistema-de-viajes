@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.contrib.auth import get_user_model
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.db.models import Q
-from cities_light.models import City
+from cities_light.models import City, Region, Country
 from .forms import AddClientForm, ReadUpdateClientForm, AddVisaForm, AddPassportForm
 from .models import Client, Visa, Passport
 from django.contrib import messages
@@ -17,7 +17,8 @@ def search_name(request):
     query_string = request.GET.get('q')
     if query_string:
         query_list = query_string.split()
-        queries = [Q(first_name__icontains=term) | 
+        queries = [Q(id_number__icontains=term) |
+                   Q(first_name__icontains=term) | 
                    Q(second_name__icontains=term) | 
                    Q(last_name__icontains=term) | 
                    Q(sur_name__icontains=term) for term in query_list]
@@ -43,15 +44,15 @@ def clients_visualize(request):
 @login_required 
 def clients_create(request):
     if request.method == 'POST':
-        form = AddClientForm(request.POST)
+        form = AddClientForm(request.POST, request.FILES)
         if form.is_valid():
             User = get_user_model()
-            client = form.save(commit=False)
-            client.salesman_refer = User.objects.get(username=request.user.username).userprofile
-            client.save()
+            form.salesman_refer = User.objects.get(username=request.user.username).userprofile
+            form.save()
+
             return redirect('/dashboard/clients/')            
         else:
-            cache.set('cached_cities', City.objects.all(), 60*60*2) # Set Cities in cache for 2 hours every time the model is accessed
+            #cache.set('cached_cities', City.objects.all(), 60*60*2) # Set Cities in cache for 2 hours every time the model is accessed
             return render(request, 'clients/new_client.html',
                     {'form': form})
     else:
@@ -60,18 +61,51 @@ def clients_create(request):
         return render(request, 'clients/new_client.html',
                     {'form': form})
     
+@login_required
+def get_regions(request, *args, **kwargs):
+    if request.method == 'GET':
+        country_id = request.GET.get('country')
+        try:
+            regions = Region.objects.filter(country=country_id)
+            data = [{'id': '', 'name': '---------'}]
+            data += [{'id': region.id, 'name': region.name} for region in regions]
+            return JsonResponse(data, safe=False)
+        except ValueError:
+            data = [{'id': '', 'name': '---------'}]
+            return JsonResponse(data, safe=False)
+    else:
+        return JsonResponse({'error': 'Not a valid request'})
+    
+@login_required
+def get_cities(request):
+    if request.method == 'GET':
+        region_id = request.GET.get('region')
+        cities = City.objects.filter(region=region_id)
+        data = [{'id': '', 'name': '---------'}]
+        data += [{'id': city.id, 'name': city.name} for city in cities]
+        return JsonResponse(data, safe=False)
+    else:
+        return JsonResponse({'error': 'Not a valid request'})
+
+    
 # Call to the client data, then display in the form with tabs
 # just to visualize unless the user wants to update the data
 @login_required
 def clients_read_update(request, pk):
     client = get_object_or_404(Client, pk=pk)
     if request.method == 'POST':
-        form = ReadUpdateClientForm(request.POST, instance=client)
-        if form.is_valid():
+        form = ReadUpdateClientForm(request.POST, request.FILES, instance=client)
+        if (request.POST.get('id_number') != client.id_number) and form.is_valid():
+            form.save()
+            messages.warning(request, f'El número de ID de "{request.POST.get("first_name")} {request.POST.get("last_name")}" ha sido cambiado a {request.POST.get("id_number")}!')
+            old_client = get_object_or_404(Client, pk=pk)
+            old_client.delete()
+            return redirect('/dashboard/clients/')
+        else:
+            form.full_clean()
             form.save()
             return redirect('/dashboard/clients/')
     else:
-         # Set Cities in cache for 2 hours every time the model is accessed
         form = ReadUpdateClientForm(instance=client)
     
     return render(request, 'clients/read_update_client.html',
